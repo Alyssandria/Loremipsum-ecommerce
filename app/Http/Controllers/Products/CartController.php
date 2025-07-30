@@ -3,18 +3,14 @@
 namespace App\Http\Controllers\Products;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
-    public function store(string $productID)
+    public function store(Request $request, string $productID)
     {
-        // GET CURRENT USER'S CART
-        $user = Auth::user();
+        $user = $request->user();
         $cart = $user->cart()->firstOrCreate([]);
-
-        // ADD A CART ITEM IF PRODUCT IS NOT IN THE CART
-        // INCREASE QUANTITY IF ALREADY IN THE CART
 
         if ($existing = $cart->cartItem()->where('product_id', $productID)->first()) {
             $existing->increment('quantity');

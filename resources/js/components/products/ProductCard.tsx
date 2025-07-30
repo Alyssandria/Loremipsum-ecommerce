@@ -4,6 +4,7 @@ import { ComponentProps } from "react";
 import { Card, CardHeader, CardContent, CardDescription, CardFooter, CardTitle } from "@/components/ui/card";
 import { Link } from "@inertiajs/react";
 import { ShoppingCartIcon } from "lucide-react";
+import { Cart } from "./Cart";
 
 type ProductCardComponent = {
     data: Product
@@ -15,9 +16,7 @@ export const ProductCard = ({ data }: ProductCardComponent) => {
             <CardHeader>
                 <CardTitle>{data.title}</CardTitle>
                 <div>
-                    <Link href={route('cart.add', data.id)} method="post" as="button">
-                        <ShoppingCartIcon />
-                    </Link>
+                    <Cart productID={data.id} />
                 </div>
             </CardHeader>
             <CardContent>
