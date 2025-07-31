@@ -10,7 +10,6 @@ type CartComponentProps = {
 } & ComponentProps<typeof Button>
 export const Cart = ({ productID, className, ...props }: CartComponentProps) => {
     const { auth } = usePage<SharedData>().props;
-    console.log()
 
     const addToCart = async function(productID: number) {
         if (!auth.user) {
@@ -25,9 +24,6 @@ export const Cart = ({ productID, className, ...props }: CartComponentProps) => 
             },
             method: 'post'
         });
-
-        console.log(response);
-
     }
     return (
         <Button className={cn("", className)} {...props} onClick={() => addToCart(productID)}>

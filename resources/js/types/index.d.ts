@@ -1,8 +1,15 @@
 import { LucideIcon } from 'lucide-react';
 import type { Config } from 'ziggy-js';
 
+export interface Carts {
+  product_id : number,
+  cart_id : number,
+  quantity: number
+}
+
 export interface Auth {
     user: User;
+    carts: Carts[] | null;
 }
 
 export interface BreadcrumbItem {
