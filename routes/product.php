@@ -4,12 +4,19 @@ use App\Http\Controllers\Products\CartController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Products\ShopController;
 
-Route::get('/shop', [ShopController::class, 'index'])
-    ->name('app.shop');
+Route::get('/products', [ShopController::class, 'index'])
+    ->name('product.index');
+
+Route::get('/product/{productID}', [ShopController::class, 'show'])
+    ->name('product.show');
+
+Route::post('/checkout', [ShopController::class, 'checkout'])
+    ->name('product.checkout');
 
 Route::middleware('auth')->group(function () {
-    Route::get('carts/', [CartController::class,'index'])
+    Route::get('/carts', [CartController::class, 'index'])
         ->name('carts.index');
-    Route::post('cart/{productID}', [CartController::class, 'store'])
+
+    Route::post('/cart/{productID}', [CartController::class, 'store'])
         ->name('cart.add');
 });
