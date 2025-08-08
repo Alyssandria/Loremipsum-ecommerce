@@ -42,10 +42,8 @@ export const Cart = ({ productID, className, ...props }: CartComponentProps) => 
         setIsLoading(false);
 
         router.reload({ only: ['auth'] });
-
     }
     return (
-
         isLoading
             ?
             <Loader2Icon className="animate-spin" />

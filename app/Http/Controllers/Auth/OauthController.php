@@ -31,6 +31,6 @@ class OauthController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('app.shop');
+        return redirect()->route('product.index');
     }
 }

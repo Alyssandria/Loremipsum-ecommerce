@@ -13,6 +13,14 @@ class ShopController extends Controller
     /**
      * @return Response
      */
+    public function singleCheckoutIndex(int $productID)
+    {
+        $products = Http::get(env('PRODUCTS_API_BASE') . '/' . $productID)->json();
+        return Inertia::render('payment/Checkout', compact('products'));
+    }
+    /**
+     * @return Response
+     */
     public function index()
     {
         $response = Http::get(env('PRODUCTS_API_BASE'))->json()['products'];
@@ -23,6 +31,8 @@ class ShopController extends Controller
         $product = Http::get(env('PRODUCTS_API_BASE') . '/' . $productID)->json();
         return Inertia::render('shop/Product', compact('product'));
     }
-
+    /**
+     * @return void
+     */
     public function checkout(Request $request) {}
 }

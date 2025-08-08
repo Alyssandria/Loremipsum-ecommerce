@@ -10,6 +10,9 @@ Route::get('/products', [ShopController::class, 'index'])
 Route::get('/product/{productID}', [ShopController::class, 'show'])
     ->name('product.show');
 
+Route::get('/checkout/{productID}', [ShopController::class, 'singleCheckoutIndex'])
+    ->name('checkout.show');
+
 Route::post('/checkout', [ShopController::class, 'checkout'])
     ->name('product.checkout');
 

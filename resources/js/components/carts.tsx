@@ -1,17 +1,18 @@
 import {
     Sheet,
     SheetContent,
-    SheetDescription,
     SheetHeader,
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet"
 import { Product, SharedData } from "@/types"
-import { Link, usePage } from "@inertiajs/react"
+import { router, usePage } from "@inertiajs/react"
 import { ShoppingCartIcon } from "lucide-react"
 import { useEffect, useState } from "react";
 import { Skeleton } from "./ui/skeleton";
 import { cn } from "@/lib/utils";
+import { Button } from "./ui/button";
+import { CartItem } from "./cartItem";
 
 export function Carts() {
     const { auth } = usePage<SharedData>().props;
@@ -47,6 +48,7 @@ export function Carts() {
         fetchData();
     }, [auth.carts])
 
+    console.log(isLoading);
     return (
         <Sheet>
             <SheetTrigger className="cursor-pointer flex gap-2 items-center">
@@ -59,39 +61,16 @@ export function Carts() {
                 </SheetHeader>
                 <div className={cn("flex flex-col gap-3", isLoading ? "gap-12 h-1/2 justify-between" : "")}>
                     {
-                        isLoading ?
-                            Array.from({ length: 3 }, () => 0).map((_, i) =>
-                            (
-                                <div className="w-full h-full flex gap-2" key={i}>
-                                    <Skeleton className="w-1/2 h-full" />
-                                    <div className="flex gap-3 flex-col w-full">
-                                        <Skeleton className="h-full w-full" />
-                                        <Skeleton className="h-full w-1/2" />
-                                        <Skeleton className="w-8 h-full" />
-                                    </div>
-                                </div>
-                            ))
+                        !auth.carts.length
+                            ?
+                            <span>No items in your cart</span>
                             :
-                            cartItems.length === 0
-                                ?
-                                <span>No items in your cart</span>
-                                :
-                                cartItems.map((el) => {
-                                    return (
-                                        <Link className="flex gap-2" href={route('product.show', el.id)} key={el.id}>
-                                            <img
-                                                src={el.thumbnail}
-                                                className="w-1/2 h-full"
-                                            />
-                                            <div className="flex flex-col gap-2">
-                                                <p className="font-bold">{el.title}</p>
-                                                <p>{el.category}</p>
-                                                <p>{(auth.carts!.find((elem) => elem.product_id === el.id)!.quantity).toFixed(2)}</p>
-                                                <p>{el.price * auth.carts!.find((elem) => elem.product_id === el.id)?.quantity!}</p>
-                                            </div>
-                                        </Link>
-                                    )
-                                })}
+                            cartItems.map((el) => {
+                                return (
+                                    <CartItem item={el} isLoading={isLoading} key={el.id} />
+                                )
+                            })
+                    }
                 </div>
             </SheetContent>
         </Sheet >
