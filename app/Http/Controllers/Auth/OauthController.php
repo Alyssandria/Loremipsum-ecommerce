@@ -17,20 +17,20 @@ class OauthController extends Controller
     {
         return Socialite::driver($provider)->redirect();
     }
-
-    public function callback($provider): RedirectResponse
+    /**
+     * @param string $provider
+     */
+    public function callback(string $provider): RedirectResponse
     {
         $oauth = Socialite::driver($provider)->user();
 
-        $user = User::query()->firstOrCreate([
-            'email' => $oauth->getEmail(),
-        ], [
-            'name' => $oauth->getName(),
-            'avatar' => $oauth->getAvatar
-        ]);
+        if($exists = User::query()->where(['email' => $oauth->getEmail()])->first()){
+            Auth::login($exists);
+            return redirect()->route('product.index');
+        }
 
-        Auth::login($user);
-
-        return redirect()->route('product.index');
+        // SET EMAIL IN SESSION
+        session(['email' => $oauth->getEmail()]);
+        return redirect()->route('auth.onboarding');
     }
 }

@@ -48,8 +48,8 @@ export const Cart = ({ productID, className, ...props }: CartComponentProps) => 
             ?
             <Loader2Icon className="animate-spin" />
             :
-            <Button className={cn("", className)} {...props} onClick={(e) => addToCart(e, productID)}>
-                <ShoppingCartIcon className="size-6" />
+            <Button className={cn("bg-secondary dark:bg-primary", className)} {...props} onClick={(e) => addToCart(e, productID)}>
+                <ShoppingCartIcon className="size-6 stroke-secondary-foreground dark:stroke-primary-foreground" />
             </Button>
     )
 }
