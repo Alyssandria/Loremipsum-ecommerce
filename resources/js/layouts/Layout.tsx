@@ -20,9 +20,9 @@ const BannerIcon = () => (
     </svg>
 )
 
-const NavLink = ({ routeName, className, children }: { routeName: string, className?: string, children: ReactNode }) => {
+export const NavLink = ({ routeName, className, children, onClick }: { onClick?: (e: React.MouseEvent<Element, MouseEvent>) => void, routeName: string, className?: string, children: ReactNode }) => {
     return (
-        <Link href={route(routeName)} className={cn(route().current(routeName) ? "font-bold" : "font-normal", className)}>
+        <Link href={route(routeName)} onClick={(e) => onClick && onClick(e)} className={cn("max-md:py-4 max-md:border-b", route().current(routeName) ? "font-bold" : "font-normal", className)}>
             {children}
         </Link>
     )
@@ -73,7 +73,6 @@ export default function Layout({ children }: ComponentProps<"div">) {
                         <>
                             <Link
                                 href={route('login')}
-                                className="inline-block rounded-sm border border-transparent px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#19140035] dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A]"
                             >
                                 Log in
                             </Link>

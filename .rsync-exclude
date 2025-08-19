@@ -1,0 +1,7 @@
+node_modules/
+.git/
+.dockerignore
+.editorconfig/
+.gitattributes
+.prettierignore
+.prettierrrc

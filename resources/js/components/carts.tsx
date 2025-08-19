@@ -12,13 +12,12 @@ import { cn } from "@/lib/utils";
 import { CartItem } from "./cartItem";
 import { Skeleton } from "./ui/skeleton";
 
-const Cart = (props) => (
+const Cart = () => (
     <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
         className="w-6 stroke-black"
         fill="none"
-        {...props}
     >
         <path
             strokeLinecap="round"
@@ -80,23 +79,24 @@ export function Carts() {
                 </SheetHeader>
                 <div className={cn("flex flex-col gap-3", isLoading ? "gap-12 justify-between" : "")}>
                     {
-                        isLoading ?
-                            Array.from({ length: 3 }).fill(0).map((_, i) => {
-                                return (
-                                    <div className="w-full h-20 flex gap-2" key={i}>
-                                        <Skeleton className="w-1/2 h-full" />
-                                        <div className="flex gap-3 flex-col w-full">
-                                            <Skeleton className="h-full w-full" />
-                                            <Skeleton className="h-full w-1/2" />
-                                            <Skeleton className="w-8 h-full" />
+
+                        !auth.carts || !auth.carts.length
+                            ?
+                            <span>No items in your cart</span>
+                            :
+                            isLoading ?
+                                Array.from({ length: 3 }).fill(0).map((_, i) => {
+                                    return (
+                                        <div className="w-full h-20 flex gap-2" key={i}>
+                                            <Skeleton className="w-1/2 h-full" />
+                                            <div className="flex gap-3 flex-col w-full">
+                                                <Skeleton className="h-full w-full" />
+                                                <Skeleton className="h-full w-1/2" />
+                                                <Skeleton className="w-8 h-full" />
+                                            </div>
                                         </div>
-                                    </div>
-                                )
-                            }) :
-                            !auth.carts || !auth.carts.length
-                                ?
-                                <span>No items in your cart</span>
-                                :
+                                    )
+                                }) :
                                 cartItems.map((el) => {
                                     return (
                                         <CartItem item={el} key={el.id} />
