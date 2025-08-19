@@ -31,10 +31,10 @@ export default function Layout({ children }: ComponentProps<"div">) {
     const { auth } = usePage<SharedData>().props;
     return (
         <div className="w-full bg-white text-primary-foreground">
-            <div className="w-full bg-[#F3F5F7] p-2 justify-center gap-2 flex">
+            <div className="w-full bg-[#F3F5F7] p-2 items-center justify-center gap-2 flex">
                 <BannerIcon />
-                <p className="text-[#343839] font-bold">{HomePage.Banner.content}</p>
-                <Link href={route('product.index')} className="flex items-center gap-2 font-bold underline text-[#377DFF]">
+                <p className="max-sm:text-xs text-[#343839] font-bold">{HomePage.Banner.content}</p>
+                <Link href={route('product.index')} className="max-md:hidden flex items-center gap-2 font-bold underline text-[#377DFF]">
                     {HomePage.Banner.cta.content}
                     <ArrowRightIcon className="w-4 stroke-[#377DFF]" />
                 </Link>
@@ -80,7 +80,7 @@ export default function Layout({ children }: ComponentProps<"div">) {
                     )}
                 </nav>
             </header>
-            <main className="w-full bg-white">
+            <main className="w-full bg-white px-6 md:px-12">
                 {children}
             </main>
         </div>
