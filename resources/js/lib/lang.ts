@@ -10,6 +10,10 @@ export const HomePage = {
         home: "Home",
         shop: "Shop",
         contact: "Contact us"
+    },
+    Hero: {
+        title: "Simply Unique/Simply Better.",
+        subtitle: "Loremipsum is an all in one store based in the Philippines. Est since 2025."
     }
 
 

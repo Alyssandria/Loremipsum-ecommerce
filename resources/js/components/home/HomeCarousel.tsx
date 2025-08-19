@@ -22,7 +22,6 @@ export const HomeCarousel = () => {
         if (!api) {
             return
         }
-
         setCurrent(api.selectedScrollSnap() + 1)
 
         api.on("select", () => {
@@ -34,7 +33,7 @@ export const HomeCarousel = () => {
 
     return (
         <Carousel setApi={setApi}>
-            <CarouselContent className="w-full max-h-[677px]">
+            <CarouselContent className="w-full max-h-[600px]">
                 <CarouselItem className="size-full max-h-[677px] overflow-clip"><img src={car1} className="size-full md:object-cover" /></CarouselItem>
                 <CarouselItem><img src={car2} className="size-full md:object-cover" /></CarouselItem>
                 <CarouselItem><img src={car3} className="size-full md:object-cover" /></CarouselItem>
