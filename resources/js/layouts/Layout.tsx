@@ -4,8 +4,11 @@ import { HomePage } from "@/lib/lang";
 import { cn } from "@/lib/utils";
 import { SharedData } from "@/types";
 import { Link, usePage } from "@inertiajs/react";
-import { ArrowRightIcon } from "lucide-react";
+import { ArrowRight, ArrowRightIcon } from "lucide-react";
 import { ComponentProps, ReactNode } from "react";
+import marketing from "@/assets/marketing.jpg"
+import { Separator } from "@/components/ui/separator";
+
 const BannerIcon = () => (
     <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -83,6 +86,47 @@ export default function Layout({ children }: ComponentProps<"div">) {
             <main className="w-full bg-white px-6 md:px-12">
                 {children}
             </main>
+
+            {
+                window.location.pathname === '/' &&
+                <section className='flex flex-col bg-[#F3F5F7] mt-12 lg:flex-row'>
+                    <div className="size-full">
+                        <img src={marketing} alt="Marketing Image" className="size-full object-fill" />
+                    </div>
+                    <div className="w-full p-6 md:px-20 md:py-12 flex gap-4 flex-col md:justify-center md:text-center md:items-center lg:text-left lg:items-start">
+                        <p className="font-bold text-[#377DFF]">{HomePage.Marketing.discount}</p>
+                        <h2 className="w-full font-bold text-2xl lg:text-4xl">{HomePage.Marketing.title}</h2>
+                        <p className="lg:text-xl lg:w-4/5">{HomePage.Marketing.subtitle}</p>
+                        <Link href={route('product.index')} className='flex flex-nowrap border-b w-max font-medium gap-2'>
+                            {HomePage.Marketing.cta.content}
+                            <ArrowRight className="w-4" />
+                        </Link>
+                    </div>
+                </section>
+            }
+            <footer className="bg-[#232627] text-white gap-6 p-6 grid place-items-center md:place-items-start md:grid-cols-8 md:p-12">
+                <Link href={route('home')} className="text-xl font-bold md:text-sm">{HomePage.Navigation.logo}</Link>
+                <div className="flex flex-col items-center justify-center gap-4 md:col-start-6 w-full md:col-span-full md:flex-row md:justify-end md:items-start">
+                    <Link href={route('home')} className="">{HomePage.Navigation.home}</Link>
+                    <Link href={route('home')} className="">{HomePage.Navigation.shop}</Link>
+                    <Link href={route('home')} className="">{HomePage.Navigation.contact}</Link>
+                </div>
+                <Separator className="bg-muted-foreground w-full col-span-full" />
+                <div className="w-full gap-4 md:flex md:col-span-full md:flex-row-reverse md:flex-nowrap">
+                    <div className="flex justify-around w-full md:justify-start">
+                        <p className="font-bold text-xs">
+                            Privacy Policy
+                        </p>
+                        <p className="font-bold text-xs">
+                            Terms of use
+                        </p>
+                    </div>
+                    <p className="text-xs text-center md:text-left">
+                        Copyright © 2025 Loremipsum. All rights reserved
+                    </p>
+                </div>
+
+            </footer>
         </div>
 
     )

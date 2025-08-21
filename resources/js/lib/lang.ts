@@ -40,7 +40,19 @@ export const HomePage = {
         Support: {
             title: "24 / 7 Support",
             subtitle: "Phone and Email Support"
+        },
+    },
+
+    Marketing: {
+        discount: "SALE UP TO 35% OFF",
+        title: "HUNDREDS of New lower prices!",
+        subtitle: "It’s more affordable than ever to give every room in your home a stylish makeover",
+        cta: {
+            content: "Shop Now"
+
         }
+
     }
+
 
 }
