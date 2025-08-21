@@ -30,7 +30,7 @@ export const NavLink = ({ routeName, className, children, onClick }: { onClick?:
 export default function Layout({ children }: ComponentProps<"div">) {
     const { auth } = usePage<SharedData>().props;
     return (
-        <div className="w-full bg-white text-primary-foreground">
+        <div className="w-full bg-white text-primary-foreground overflow-x-clip">
             <div className="w-full bg-[#F3F5F7] p-2 items-center justify-center gap-2 flex">
                 <BannerIcon />
                 <p className="max-sm:text-xs text-[#343839] font-bold">{HomePage.Banner.content}</p>

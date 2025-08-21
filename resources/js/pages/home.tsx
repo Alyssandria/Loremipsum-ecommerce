@@ -1,7 +1,9 @@
 import { HomeCarousel } from '@/components/home/HomeCarousel';
+import { ProductCard } from '@/components/products/ProductCard';
 import { HomePage } from '@/lib/lang';
+import { Product } from '@/types';
 import { Head, Link } from '@inertiajs/react';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Lock, LucidePhoneCall, TruckIcon, Wallet2Icon } from 'lucide-react';
 import { ComponentProps } from 'react';
 
 type HomeProps = {
@@ -14,14 +16,12 @@ type HomeProps = {
         thumbnail: string
     }[],
 
-    products: string[]
+    products: Product[]
 } & ComponentProps<'div'>
 
 export default function Home({ categories, products }: HomeProps) {
     const titlePart = HomePage.Hero.title.split('/');
     const subtitlePart = HomePage.Hero.subtitle.split('Loremipsum ');
-
-    console.log(categories[0]);
 
     return (
         <>
@@ -47,7 +47,7 @@ export default function Home({ categories, products }: HomeProps) {
                 </section>
 
                 <section className='flex flex-col gap-4 md:flex-row'>
-                    <Link href={categories[0].category.url} className='w-full flex flex-col items-center gap-4 p-4 bg-[#F3F5F7]'>
+                    <Link href={route("product.index", { category: categories[0].category.slug })} className='w-full flex flex-col items-center gap-4 p-4 bg-[#F3F5F7]'>
                         <span className='self-start block text-4xl font-medium'>{categories[0].category.name}</span>
                         <span className='self-start flex gap-2 w-fit border-b-2'>
                             Shop Now
@@ -62,9 +62,8 @@ export default function Home({ categories, products }: HomeProps) {
                             if (i === 0) {
                                 return null
                             }
-
                             return (
-                                <Link href={el.category.url} className='w-full flex items-center gap-4 p-4 md:p-8 bg-[#F3F5F7]'>
+                                <Link href={route("product.index", { category: el.category.slug })} className='w-full flex items-center gap-4 p-4 md:p-8 bg-[#F3F5F7]' key={el.category.name}>
                                     <div className='self-end'>
                                         <span className='self-start block font-medium text-xl'>{el.category.name}</span>
                                         <span className='self-start flex font-medium text-xs gap-2 w-fit border-b-2'>
@@ -80,6 +79,52 @@ export default function Home({ categories, products }: HomeProps) {
                         })}
                     </div>
                 </section>
+
+                <section className='grid grid-cols-2 gap-8'>
+
+                    <h2 className='font-bold text-4xl sm:w-4/5 lg:text-7xl xl:text-8xl'>{HomePage.Arrivals.title}</h2>
+
+                    <div className='flex gap-4 overflow-x-scroll col-span-2 snap-x snap-mandatory md:gap-8'>
+                        {products.map(el => {
+                            return (
+                                <ProductCard data={el} className='w-[70%] snap-center shrink-0 md:shrink' />
+                            )
+                        })}
+                    </div>
+
+                    <div className='row-start-3 w-max md:place-self-end md:col-start-2 md:row-start-1'>
+                        <Link href={route("product.index")} className='md:text-lg flex gap-2 border-b'>
+                            {HomePage.Arrivals.cta.content}
+                            <ArrowRight />
+                        </Link>
+                    </div>
+                </section>
+
+                <section className='grid grid-cols-2 lg:flex gap-4 md:gap-8 justify-between'>
+                    <div className='bg-[#F3F5F7] w-full flex flex-col justify-center p-4 py-8 md:p-12 gap-4'>
+                        <TruckIcon className='size-12' />
+                        <p className='text-lg md:text-xl font-bold'>{HomePage.Features.Shipping.title}</p>
+                        <p className='text-muted-[#6C7275]'>{HomePage.Features.Shipping.subtitle}</p>
+                    </div>
+
+                    <div className='bg-[#F3F5F7] w-full flex flex-col justify-center p-4 md:p-12 gap-4'>
+                        <Wallet2Icon className='size-12' />
+                        <p className='text-lg md:text-xl font-bold'>{HomePage.Features.Money.title}</p>
+                        <p className='text-muted-[#6C7275]'>{HomePage.Features.Money.subtitle}</p>
+                    </div>
+                    <div className='bg-[#F3F5F7] w-full flex flex-col justify-center p-4 md:p-12 gap-4'>
+                        <Lock className='size-12' />
+                        <p className='text-lg md:text-xl font-bold'>{HomePage.Features.Secure.title}</p>
+                        <p className='text-muted-[#6C7275]'>{HomePage.Features.Secure.subtitle}</p>
+                    </div>
+
+                    <div className='bg-[#F3F5F7] w-full flex flex-col justify-center p-4 md:p-12 gap-4'>
+                        <LucidePhoneCall className='size-12' />
+                        <p className='text-lg md:text-xl font-bold'>{HomePage.Features.Support.title}</p>
+                        <p className='text-muted-[#6C7275]'>{HomePage.Features.Support.subtitle}</p>
+                    </div>
+                </section>
+
             </div>
 
         </>

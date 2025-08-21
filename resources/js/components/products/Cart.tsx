@@ -9,7 +9,7 @@ type CartComponentProps = {
     productID: number
 } & ComponentProps<typeof Button>
 
-export const Cart = ({ productID, className, ...props }: CartComponentProps) => {
+export const Cart = ({ productID, className, children, ...props }: CartComponentProps) => {
     const { auth } = usePage<SharedData>().props;
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -44,12 +44,14 @@ export const Cart = ({ productID, className, ...props }: CartComponentProps) => 
         router.reload({ only: ['auth'] });
     }
     return (
-        isLoading
-            ?
-            <Loader2Icon className="animate-spin" />
-            :
-            <Button className={cn("bg-secondary dark:bg-primary", className)} {...props} onClick={(e) => addToCart(e, productID)}>
-                <ShoppingCartIcon className="size-6 stroke-secondary-foreground dark:stroke-primary-foreground" />
-            </Button>
+        <Button className={cn("", className)} disabled={isLoading} {...props} onClick={(e) => addToCart(e, productID)}>
+            {
+                isLoading
+                    ?
+                    <Loader2Icon className="animate-spin" />
+                    :
+                    children
+            }
+        </Button>
     )
 }
