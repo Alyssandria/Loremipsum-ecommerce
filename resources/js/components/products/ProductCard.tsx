@@ -4,7 +4,6 @@ import { ComponentProps } from "react";
 import { Card, CardHeader, CardContent, CardFooter, CardTitle } from "@/components/ui/card";
 import { ShoppingCartIcon, StarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "@headlessui/react";
 import { Cart } from "./Cart";
 
 type ProductCardComponent = {
@@ -12,7 +11,6 @@ type ProductCardComponent = {
 } & ComponentProps<'div'>
 
 export const ProductCard = ({ data, className }: ProductCardComponent) => {
-    console.log(data);
     return (
         <form onClick={() => route('product.show', data.id)} className={cn("w-full block text-left hover:cursor-pointer", className)}>
             <Card className="bg-white border-none shadow-none">

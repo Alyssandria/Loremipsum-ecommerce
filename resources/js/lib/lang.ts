@@ -53,6 +53,12 @@ export const HomePage = {
         }
 
     }
+}
 
+export const ShopPage = {
+    Hero: {
+        title: "Shop Page",
+        subtitle: "Where you'll get what you deserve"
+    }
 
 }
