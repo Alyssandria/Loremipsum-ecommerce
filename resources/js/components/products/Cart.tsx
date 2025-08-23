@@ -16,11 +16,12 @@ export const Cart = ({ productID, className, children, ...props }: CartComponent
     const addToCart = async function(e: React.MouseEvent<HTMLButtonElement, MouseEvent>, productID: number) {
         e.stopPropagation();
 
+        setIsLoading(true);
+
         if (!auth.user) {
             return router.visit(route('login'));
         }
 
-        setIsLoading(true);
 
         const response = await fetch(`cart/${productID}`, {
             credentials: 'include',

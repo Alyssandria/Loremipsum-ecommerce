@@ -23,7 +23,7 @@ import {
 import { ChevronDown, Columns2, Grid3x3, Rows2, Settings2 } from "lucide-react";
 import { Link } from "@inertiajs/react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn, formatCategory } from "@/lib/utils";
 import { useMediaQuery } from 'usehooks-ts'
 import {
     DropdownMenu,
@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 import { DropdownMenuLabel } from "@radix-ui/react-dropdown-menu";
+import { format } from "path";
 type ShopLayoutProps = {
     products: Product[],
     currentCategory: string,
@@ -66,8 +67,16 @@ const SORTOPTIONS = {
             VALUE: "desc"
         },
     ]
-
 }
+
+
+const layoutClass = {
+    "1": "grid-cols-1",
+    "2": "grid-cols-2",
+    "3": "grid-cols-3",
+}
+
+
 
 const SortOption = ({ children, ...props }: ComponentProps<typeof Link>) => {
     return (
@@ -90,10 +99,9 @@ const LayoutButton = ({ children, className, ...props }: ComponentProps<typeof B
 
 export default function Layout({ sort, order, products, currentCategory, categoryList }: ShopLayoutProps) {
     const isPhone = useMediaQuery('(max-width: 768px)');
-    const [columns, setColumns] = useState<number>(2);
+    const isLarge = useMediaQuery('(min-width: 1024px)');
 
-    console.log(products)
-
+    const [columns, setColumns] = useState<1 | 2 | 3>(2);
     useEffect(() => {
         if (isPhone) {
             setColumns(2);
@@ -124,120 +132,159 @@ export default function Layout({ sort, order, products, currentCategory, categor
                 </section>
 
                 <section>
-                    <div className="flex flex-col gap-4">
-                        <div>
+                    <div className="flex flex-col gap-4 lg:gap-8 lg:flex-row lg:justify-between">
+                        <div className="w-full lg:w-3/5">
+                            {
+                                isLarge ?
 
-                            <div className="hidden lg:flex">
-                                <Settings2 />
-                                <p>Filter</p>
-                            </div>
-                            <div className="hidden lg:flex lg:flex-col">
-                                <p className="font-bold uppercase">Categories</p>
-                                {categoryList.map(el => {
-                                    return (
-                                        <Link href={route('product.index', { category: el })} key={el}>{el}</Link>
-                                    )
-                                })}
-                            </div >
-
-                            <div className="flex py-2 justify-between items-center border-t border-b border-t-[#E8ECEF] border-b-[#E8ECEF]">
-
-                                <Drawer>
-                                    <DrawerTrigger className="flex gap-2 lg:hidden">
-                                        <Settings2 />
-                                        <p className="font-bold">Filter</p>
-                                    </DrawerTrigger>
-                                    <DrawerContent className="p-8">
-                                        <DrawerHeader>
-                                            <DrawerTitle>Filter Products</DrawerTitle>
-                                        </DrawerHeader>
-
-                                        <div className="space-y-4">
-                                            <p className="font-bold">Categories</p>
-                                            <div className="max-h-[300px] overflow-auto flex flex-col gap-4 ">
+                                    <div className=" flex flex-col gap-8 w-full">
+                                        <div className="hidden lg:flex">
+                                            <Settings2 />
+                                            <p>Filter</p>
+                                        </div>
+                                        <div className="flex flex-col gap-6">
+                                            <p className="font-bold uppercase">Categories</p>
+                                            <div className="flex flex-col max-h-80 overflow-y-scroll gap-4 font-medium text-[#807E7E]">
+                                                <Link href={route('product.index')} className={currentCategory === "all" ? "text-black underline font-bold" : ""}>All Products</Link>
                                                 {categoryList.map(el => {
                                                     return (
-                                                        <Link href={route('product.index', { category: el })} key={el}>{el}</Link>
+                                                        <Link href={route('product.index', { category: el })} key={el} className={currentCategory === el ? "text-black underline font-bold" : ""}>
+                                                            {formatCategory(el)}
+                                                        </Link>
                                                     )
                                                 })}
                                             </div>
+                                        </div >
+                                    </div>
+                                    :
+                                    <div className="flex py-2 justify-between items-center border-t border-b border-t-[#E8ECEF] border-b-[#E8ECEF]">
+                                        <Drawer>
+                                            <DrawerTrigger className="flex gap-2 lg:hidden">
+                                                <Settings2 />
+                                                <p className="font-bold">Filter</p>
+                                            </DrawerTrigger>
+                                            <DrawerContent className="p-8">
+                                                <DrawerHeader>
+                                                    <DrawerTitle>Filter Products</DrawerTitle>
+                                                </DrawerHeader>
+
+                                                <div className="space-y-4">
+                                                    <p className="font-bold">Categories</p>
+                                                    <div className="max-h-[300px] overflow-auto flex flex-col gap-4 ">
+                                                        {categoryList.map(el => {
+                                                            return (
+                                                                <Link href={route('product.index', { category: el })} key={el}>
+                                                                    {
+                                                                        formatCategory(el)
+                                                                    }
+                                                                </Link>
+                                                            )
+                                                        })}
+                                                    </div>
+                                                </div>
+
+                                                <DrawerFooter>
+                                                    <Button>Submit</Button>
+                                                    <DrawerClose asChild>
+                                                        <Button variant="outline">Cancel</Button>
+                                                    </DrawerClose>
+                                                </DrawerFooter>
+                                            </DrawerContent>
+                                        </Drawer>
+
+                                        <div className="p-2">
+                                            <LayoutButton
+                                                onClick={() => setColumns(2)}
+                                                className={columns === 2 ? "bg-[#F3F5F7]" : ""}
+                                            >
+                                                <Columns2 className="border-none stroke-white fill-[#141718]" />
+                                            </LayoutButton>
+                                            <LayoutButton
+                                                onClick={() => setColumns(1)}
+                                                className={columns === 1 ? "bg-[#F3F5F7]" : ""}
+                                            >
+                                                <Rows2 className="border-none stroke-white fill-[#141718]" />
+                                            </LayoutButton>
+                                            <LayoutButton
+                                                onClick={() => setColumns(3)}
+                                                className={cn("max-md:hidden", columns === 3 ? "bg-[#F3F5F7]" : "")}
+                                            >
+                                                <Grid3x3 className="border-none stroke-white fill-[#141718]" />
+                                            </LayoutButton>
                                         </div>
+                                    </div>
+                            }
+                        </div>
 
-                                        <DrawerFooter>
-                                            <Button>Submit</Button>
-                                            <DrawerClose asChild>
-                                                <Button variant="outline">Cancel</Button>
-                                            </DrawerClose>
-                                        </DrawerFooter>
-                                    </DrawerContent>
-                                </Drawer>
+                        <div className="w-full">
+                            <div className="flex justify-between">
+                                <p className="font-bold text-xl w-1/2">{currentCategory === "all" ? "All Products" : formatCategory(currentCategory)}</p>
 
-                                <div className="p-2">
-                                    <LayoutButton
-                                        onClick={() => setColumns(2)}
-                                        className={columns === 2 ? "bg-[#F3F5F7]" : ""}
-                                    >
-                                        <Columns2 className="border-none stroke-white fill-[#141718]" />
-                                    </LayoutButton>
-                                    <LayoutButton
-                                        onClick={() => setColumns(1)}
-                                        className={columns === 1 ? "bg-[#F3F5F7]" : ""}
-                                    >
-                                        <Rows2 className="border-none stroke-white fill-[#141718]" />
-                                    </LayoutButton>
-                                    <LayoutButton
-                                        onClick={() => setColumns(3)}
-                                        className={cn("max-md:hidden", columns === 3 ? "bg-[#F3F5F7]" : "")}
-                                    >
-                                        <Grid3x3 className="border-none stroke-white fill-[#141718]" />
-                                    </LayoutButton>
+                                <div className="flex gap-4 items-center">
+
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger>
+                                            <span className="flex items-center font-bold">
+                                                Sort by
+                                                <ChevronDown />
+                                            </span>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent>
+
+                                            {SORTOPTIONS.SORT.map((el) => {
+                                                return (
+                                                    <SortOption
+                                                        href={route("product.index", currentCategory !== "all" ? { category: currentCategory, sort, order: el.VALUE } : { sort, order: el.VALUE })}
+                                                    >
+                                                        <DropdownMenuItem>{el.CONTENT}</DropdownMenuItem>
+                                                    </SortOption>
+
+                                                )
+
+                                            })}
+
+                                            <DropdownMenuLabel>
+                                                Order By
+                                            </DropdownMenuLabel>
+
+                                            {SORTOPTIONS.ORDER.map((el) => {
+                                                return (
+                                                    <SortOption
+                                                        href={route("product.index", currentCategory !== "all" ? { category: currentCategory, sort: el.VALUE, order } : { sort: el.VALUE, order })}
+                                                    >
+                                                        <DropdownMenuItem>{el.CONTENT}</DropdownMenuItem>
+                                                    </SortOption>
+
+                                                )
+
+                                            })}
+
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+
+                                    <div className="p-2">
+                                        <LayoutButton
+                                            onClick={() => setColumns(2)}
+                                            className={columns === 2 ? "bg-[#F3F5F7]" : ""}
+                                        >
+                                            <Columns2 className="border-none stroke-white fill-[#141718]" />
+                                        </LayoutButton>
+                                        <LayoutButton
+                                            onClick={() => setColumns(1)}
+                                            className={columns === 1 ? "bg-[#F3F5F7]" : ""}
+                                        >
+                                            <Rows2 className="border-none stroke-white fill-[#141718]" />
+                                        </LayoutButton>
+                                        <LayoutButton
+                                            onClick={() => setColumns(3)}
+                                            className={cn("max-md:hidden", columns === 3 ? "bg-[#F3F5F7]" : "")}
+                                        >
+                                            <Grid3x3 className="border-none stroke-white fill-[#141718]" />
+                                        </LayoutButton>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div className="">
-                            <div className="flex justify-between">
-                                <p className="font-bold text-xl w-1/2">{currentCategory}</p>
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger>
-                                        <span className="flex items-center font-bold">
-                                            Sort by
-                                            <ChevronDown />
-                                        </span>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent>
-
-                                        {SORTOPTIONS.SORT.map((el) => {
-                                            return (
-                                                <SortOption
-                                                    href={route("product.index", currentCategory !== "all" ? { category: currentCategory, sort, order: el.VALUE } : { sort, order: el.VALUE })}
-                                                >
-                                                    <DropdownMenuItem>{el.CONTENT}</DropdownMenuItem>
-                                                </SortOption>
-
-                                            )
-
-                                        })}
-
-                                        <DropdownMenuLabel>
-                                            Order By
-                                        </DropdownMenuLabel>
-
-                                        {SORTOPTIONS.ORDER.map((el) => {
-                                            return (
-                                                <SortOption
-                                                    href={route("product.index", currentCategory !== "all" ? { category: currentCategory, sort: el.VALUE, order } : { sort: el.VALUE, order })}
-                                                >
-                                                    <DropdownMenuItem>{el.CONTENT}</DropdownMenuItem>
-                                                </SortOption>
-
-                                            )
-
-                                        })}
-
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            </div>
-                            <div className={cn("grid w-full gap-4", `grid-cols-${columns} `)}>
+                            <div className={cn("grid w-full gap-4", layoutClass[columns])}>
                                 {
                                     products.map((el) => (
                                         <ProductCard data={el} key={el.id} />

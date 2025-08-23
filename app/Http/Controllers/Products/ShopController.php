@@ -26,6 +26,7 @@ class ShopController extends Controller
 
     public function index(Request $request)
     {
+
         // SUBJECT FOR REFACTORING
         $categories = Http::get(env('PRODUCTS_API_BASE') . '/category-list');
         $query = $request->query("category");
