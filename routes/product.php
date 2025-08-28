@@ -4,17 +4,17 @@ use App\Http\Controllers\Products\CartController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Products\ShopController;
 
-Route::get('/products', [ShopController::class, 'index'])
-    ->name('product.index');
+Route::controller(ShopController::class)->group(function () {
+    Route::get('/products', 'index')
+        ->name('product.index');
+    Route::get('/product/{productID}','show')
+        ->name('product.show');
+    Route::get('/checkout/{productID}', 'singleCheckoutIndex')
+        ->name('checkout.show');
+    Route::post('/checkout', 'checkout')
+        ->name('product.checkout');
+});
 
-Route::get('/product/{productID}', [ShopController::class, 'show'])
-    ->name('product.show');
-
-Route::get('/checkout/{productID}', [ShopController::class, 'singleCheckoutIndex'])
-    ->name('checkout.show');
-
-Route::post('/checkout', [ShopController::class, 'checkout'])
-    ->name('product.checkout');
 
 Route::middleware('auth')->group(function () {
     Route::get('/carts', [CartController::class, 'index'])

@@ -22,8 +22,7 @@ export const Cart = ({ productID, className, children, ...props }: CartComponent
             return router.visit(route('login'));
         }
 
-
-        const response = await fetch(`cart/${productID}`, {
+        const response = await fetch(route('cart.add', productID), {
             credentials: 'include',
             headers: {
                 'Accept': 'application/json',
@@ -33,26 +32,27 @@ export const Cart = ({ productID, className, children, ...props }: CartComponent
         });
 
 
-        // HANDLE LOADING
         // SHOW ERROR TOAST
         if (!response.ok) {
-            console.log()
+            console.log(response);
             return;
         }
 
-        setIsLoading(false);
-
         router.reload({ only: ['auth'] });
+
+        setIsLoading(false);
     }
     return (
-        <Button className={cn("", className)} disabled={isLoading} {...props} onClick={(e) => addToCart(e, productID)}>
-            {
-                isLoading
-                    ?
-                    <Loader2Icon className="animate-spin" />
-                    :
-                    children
-            }
+        <Button className={cn("flex items-center justify-center bg-black text-white w-full lg:min-w-[180px]", isLoading ? "hover:cursor-not-allowed" : "", className)} disabled={isLoading} {...props} onClick={(e) => addToCart(e, productID)}>
+            <span className="block text-center">
+                {
+                    isLoading
+                        ?
+                        <Loader2Icon className="w-full animate-spin" />
+                        :
+                        children
+                }
+            </span>
         </Button>
     )
 }

@@ -16,7 +16,6 @@ class CartController extends Controller
      */
     public function index(Request $request)
     {
-
         // POOLING
         $UserCartItems = $request->user()->cart()->first()->cartItem()->get();
 

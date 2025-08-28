@@ -80,11 +80,11 @@ export default function Home({ categories, products }: HomeProps) {
                     </div>
                 </section>
 
-                <section className='grid grid-cols-2 gap-8'>
+                <section className='w-full grid grid-cols-2 gap-8'>
 
                     <h2 className='font-bold text-4xl sm:w-4/5 lg:text-7xl xl:text-8xl'>{HomePage.Arrivals.title}</h2>
 
-                    <div className='flex gap-4 overflow-x-scroll col-span-2 snap-x snap-mandatory md:gap-8'>
+                    <div className='w-full flex gap-4 overflow-x-scroll col-span-2 snap-x snap-mandatory md:gap-8'>
                         {products.map(el => {
                             return (
                                 <ProductCard data={el} className='w-[70%] snap-center shrink-0 md:shrink' />

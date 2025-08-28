@@ -3,21 +3,25 @@
 namespace App\Http\Controllers\Products;
 
 use App\Http\Controllers\Controller;
+use App\Services\PaypalService;
+use App\Services\ProductService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Inertia\Inertia;
 use Inertia\Response;
-use function Laravel\Prompts\info;
 
 class ShopController extends Controller
 {
     /**
      * @return Response
      */
-    public function singleCheckoutIndex(int $productID)
+    public function singleCheckoutIndex(Request $request, ProductService $productService, PaypalService $paypal, int $productID)
     {
-        $products = Http::get(env('PRODUCTS_API_BASE') . '/' . $productID)->json();
-        return Inertia::render('payment/Checkout', compact('products'));
+        $cartItem = $productService->getCartItem($request->user(), $productID);
+        return $paypal->makePayment($cartItem);
+
+        /* $products = Http::get(env('PRODUCTS_API_BASE') . '/' . $productID)->json(); */
+        /* return Inertia::render('payment/Checkout', compact('products')); */
     }
 
     /**
@@ -26,7 +30,6 @@ class ShopController extends Controller
 
     public function index(Request $request)
     {
-
         // SUBJECT FOR REFACTORING
         $categories = Http::get(env('PRODUCTS_API_BASE') . '/category-list');
         $query = $request->query("category");

@@ -86,6 +86,39 @@ const SortOption = ({ children, ...props }: ComponentProps<typeof Link>) => {
     )
 }
 
+type LayoutOptionsProps = {
+    columns: 1 | 2 | 3,
+    setColumns: React.Dispatch<React.SetStateAction<1 | 2 | 3>>
+
+}
+
+const LayoutOptions = ({ columns, className, setColumns, ...props }: LayoutOptionsProps & ComponentProps<"div">) => {
+    return (
+        <div className={cn("p-2", className)} {...props}>
+            <LayoutButton
+                onClick={() => setColumns(2)}
+                className={columns === 2 ? "bg-[#F3F5F7]" : ""}
+            >
+                <Columns2 className="border-none stroke-white fill-[#141718]" />
+            </LayoutButton>
+            <LayoutButton
+                onClick={() => setColumns(1)}
+                className={columns === 1 ? "bg-[#F3F5F7]" : ""}
+            >
+                <Rows2 className="border-none stroke-white fill-[#141718]" />
+            </LayoutButton>
+            <LayoutButton
+                onClick={() => setColumns(3)}
+                className={cn("max-md:hidden", columns === 3 ? "bg-[#F3F5F7]" : "")}
+            >
+                <Grid3x3 className="border-none stroke-white fill-[#141718]" />
+            </LayoutButton>
+        </div>
+
+    )
+
+}
+
 const LayoutButton = ({ children, className, ...props }: ComponentProps<typeof Button>) => {
     return (
         <Button
@@ -192,26 +225,7 @@ export default function Layout({ sort, order, products, currentCategory, categor
                                             </DrawerContent>
                                         </Drawer>
 
-                                        <div className="p-2">
-                                            <LayoutButton
-                                                onClick={() => setColumns(2)}
-                                                className={columns === 2 ? "bg-[#F3F5F7]" : ""}
-                                            >
-                                                <Columns2 className="border-none stroke-white fill-[#141718]" />
-                                            </LayoutButton>
-                                            <LayoutButton
-                                                onClick={() => setColumns(1)}
-                                                className={columns === 1 ? "bg-[#F3F5F7]" : ""}
-                                            >
-                                                <Rows2 className="border-none stroke-white fill-[#141718]" />
-                                            </LayoutButton>
-                                            <LayoutButton
-                                                onClick={() => setColumns(3)}
-                                                className={cn("max-md:hidden", columns === 3 ? "bg-[#F3F5F7]" : "")}
-                                            >
-                                                <Grid3x3 className="border-none stroke-white fill-[#141718]" />
-                                            </LayoutButton>
-                                        </div>
+                                        <LayoutOptions columns={columns} setColumns={setColumns} className="max-lg:block" />
                                     </div>
                             }
                         </div>
@@ -262,26 +276,7 @@ export default function Layout({ sort, order, products, currentCategory, categor
                                         </DropdownMenuContent>
                                     </DropdownMenu>
 
-                                    <div className="p-2">
-                                        <LayoutButton
-                                            onClick={() => setColumns(2)}
-                                            className={columns === 2 ? "bg-[#F3F5F7]" : ""}
-                                        >
-                                            <Columns2 className="border-none stroke-white fill-[#141718]" />
-                                        </LayoutButton>
-                                        <LayoutButton
-                                            onClick={() => setColumns(1)}
-                                            className={columns === 1 ? "bg-[#F3F5F7]" : ""}
-                                        >
-                                            <Rows2 className="border-none stroke-white fill-[#141718]" />
-                                        </LayoutButton>
-                                        <LayoutButton
-                                            onClick={() => setColumns(3)}
-                                            className={cn("max-md:hidden", columns === 3 ? "bg-[#F3F5F7]" : "")}
-                                        >
-                                            <Grid3x3 className="border-none stroke-white fill-[#141718]" />
-                                        </LayoutButton>
-                                    </div>
+                                    <LayoutOptions columns={columns} setColumns={setColumns} className="hidden lg:block" />
                                 </div>
                             </div>
                             <div className={cn("grid w-full gap-4", layoutClass[columns])}>

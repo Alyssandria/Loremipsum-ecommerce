@@ -104,7 +104,7 @@ export default function Layout({ children }: ComponentProps<"div">) {
                     </div>
                 </section>
             }
-            <footer className="bg-[#232627] text-white gap-6 p-6 grid place-items-center md:place-items-start md:grid-cols-8 md:p-12">
+            <footer className="bg-[#232627] text-white gap-6 p-6 grid place-items-center md:place-items-start md:grid-cols-8 md:p-12 my-20">
                 <Link href={route('home')} className="text-xl font-bold md:text-sm">{HomePage.Navigation.logo}</Link>
                 <div className="flex flex-col items-center justify-center gap-4 md:col-start-6 w-full md:col-span-full md:flex-row md:justify-end md:items-start">
                     <Link href={route('home')} className="">{HomePage.Navigation.home}</Link>
