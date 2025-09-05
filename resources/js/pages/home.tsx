@@ -3,7 +3,7 @@ import { ProductCard } from '@/components/products/ProductCard';
 import { HomePage } from '@/lib/lang';
 import { Product } from '@/types';
 import { Head, Link } from '@inertiajs/react';
-import { ArrowLeft, ArrowRight, Lock, LucidePhoneCall, TruckIcon, Wallet2Icon } from 'lucide-react';
+import { ArrowRight, Lock, LucidePhoneCall, TruckIcon, Wallet2Icon } from 'lucide-react';
 import { ComponentProps } from 'react';
 
 type HomeProps = {
@@ -22,7 +22,6 @@ type HomeProps = {
 export default function Home({ categories, products }: HomeProps) {
     const titlePart = HomePage.Hero.title.split('/');
     const subtitlePart = HomePage.Hero.subtitle.split('Loremipsum ');
-
     return (
         <>
             <Head title="Home" />
@@ -126,7 +125,6 @@ export default function Home({ categories, products }: HomeProps) {
                 </section>
 
             </div>
-
         </>
     );
 }

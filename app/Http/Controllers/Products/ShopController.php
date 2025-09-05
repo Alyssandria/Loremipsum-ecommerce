@@ -15,6 +15,19 @@ class ShopController extends Controller
     /**
      * @return Response
      */
+
+    public function checkout(Request $request, ProductService $product) {
+        $query = $request->query('ids');
+
+        $contacts = $request->user()->contacts()->get()->all();
+        $shipping = $request->user()->shippings()->get()->all();
+
+        return Inertia::render("carts/Checkout", [
+            'contacts' => $contacts,
+            'shipping' => $shipping,
+            'items' => [...$product->getAllProducts($query)]
+        ]);
+    }
     public function singleCheckoutIndex(Request $request, ProductService $productService, PaypalService $paypal, int $productID)
     {
         $cartItem = $productService->getCartItem($request->user(), $productID);

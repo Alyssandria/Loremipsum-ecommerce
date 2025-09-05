@@ -14,3 +14,20 @@ export function formatCategory(category: string) {
         : `${category[0].toUpperCase()}${category.slice(1)}`
 }
 
+export function fetchWithHeaders(route: string) {
+    return fetch(route, {
+        credentials: 'include',
+        headers: {
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')!.getAttribute('content')!,
+        }
+    });
+}
+
+export function formatPrice(price: number) {
+    return (
+        <>&#8369;{(Math.round(price * 100) / 100).toFixed(2)}</>
+    )
+
+}
+

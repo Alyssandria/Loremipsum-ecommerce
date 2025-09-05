@@ -9,20 +9,15 @@ Route::controller(ShopController::class)->group(function () {
         ->name('product.index');
     Route::get('/product/{productID}','show')
         ->name('product.show');
-    Route::get('/checkout/{productID}', 'singleCheckoutIndex')
-        ->name('checkout.show');
-    Route::post('/checkout', 'checkout')
-        ->name('product.checkout');
+    Route::get('/checkout', 'checkout')
+        ->name('checkout.show')
+        ->middleware('auth');
 });
 
 
 Route::middleware('auth')->group(function () {
     Route::get('/carts', [CartController::class, 'index'])
         ->name('carts.index');
-
-    Route::get('/checkout/{productID}', [ShopController::class, 'singleCheckoutIndex'])
-        ->name('checkout.show');
-
     Route::post('/cart/{productID}', [CartController::class, 'store'])
         ->name('cart.add');
 });

@@ -41,7 +41,7 @@ export function Carts() {
     useEffect(() => {
         const fetchData = async function() {
             setIsLoading(true);
-            const response = await fetch(route('carts.index'), {
+            const response = await fetch(route('carts.json'), {
                 credentials: 'include',
                 headers: {
                     'Accept': 'application/json',
