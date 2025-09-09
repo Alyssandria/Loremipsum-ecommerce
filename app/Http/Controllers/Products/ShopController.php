@@ -19,6 +19,10 @@ class ShopController extends Controller
     public function checkout(Request $request, ProductService $product) {
         $query = $request->query('ids');
 
+        if(!$query){
+            return redirect()->route('carts.index');
+        }
+
         $contacts = $request->user()->contacts()->get()->all();
         $shipping = $request->user()->shippings()->get()->all();
 
@@ -28,6 +32,11 @@ class ShopController extends Controller
             'items' => [...$product->getAllProducts($query)]
         ]);
     }
+
+    public function handleCheckout(Request $request) {
+        dd($request->all());
+    }
+
     public function singleCheckoutIndex(Request $request, ProductService $productService, PaypalService $paypal, int $productID)
     {
         $cartItem = $productService->getCartItem($request->user(), $productID);

@@ -24,10 +24,11 @@ class ProductService {
         }
     }
     /**
-     * Concurrently gets all products and returns it.
+     * Concurrently gets all products specified by *$ids* and returns it.
      * @param array<int> $ids
      * @return void
      */
+
     public function getAllProducts(array $ids) {
         $responses = Http::pool(function (Pool $pool) use ($ids){
             $requests = array_map(function ($n) {

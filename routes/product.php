@@ -14,7 +14,6 @@ Route::controller(ShopController::class)->group(function () {
         ->middleware('auth');
 });
 
-
 Route::middleware('auth')->group(function () {
     Route::get('/carts', [CartController::class, 'index'])
         ->name('carts.index');
