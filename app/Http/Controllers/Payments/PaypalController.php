@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Payments;
 
+use App\Actions\CreateOrderAction;
 use App\Http\Controllers\Controller;
 use App\Services\PaypalService;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class PaypalController extends Controller
 {
@@ -47,25 +49,32 @@ class PaypalController extends Controller
             $user->shippings()->create($validated);
         }
 
-        return $this->paypalClient->makePayment($request->user(), $ids);
+        return $this->paypalClient->makePayment($request->user(), [
+            'items' => $ids,
+            'contact_id' => $request->input('contact_id'),
+            'shipping_id' => $request->input('shipping_id'),
+        ]);
     }
 
-    public function paypalReturn (Request $request, PaypalService $paypal) {
+    public function paypalReturn (Request $request, PaypalService $paypal, CreateOrderAction $saveOrder) {
         $orderID = $request->query("token");
-
 
         $capture = $this->paypalClient->captureOrder($orderID);
 
-        if (
-            (array_key_exists('details', $capture) && $capture['details'][0]['issue'] == 'ORDER_ALREADY_CAPTURED')
-            || ($capture['status'] == "COMPLETED")
-        ) {
-            $order = $this->paypalClient->getOrder($orderID);
-
-            // REFLECT SUCCESSFULL TRANSACTION TO THE APP STATE
-            dd($order);
+        // CHECK IF ORDER IS CONFIRMED
+        if(
+            !(array_key_exists('status', $capture) && $capture['status'] == 'COMPLETED') &&
+            !(array_key_exists('details', $capture) && $capture['details'][0]['issue'] == 'ORDER_ALREADY_CAPTURED')
+        ){
+            $request->session()->flash('error', [
+                'message' => 'Something went wrong on the order',
+            ]);
         }
 
-        // HANDLE ERRORS
+        // SAVE STATE TO DB
+        $saveOrder->execute($request->user(), $this->paypalClient->getOrder($orderID));
+
+        return redirect()->route('order.completed', ['orderID' => $orderID]);
+
     }
 }

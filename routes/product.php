@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Orders\OrderController;
 use App\Http\Controllers\Products\CartController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Products\ShopController;
@@ -13,6 +14,19 @@ Route::controller(ShopController::class)->group(function () {
         ->name('checkout.show')
         ->middleware('auth');
 });
+
+Route::controller(OrderController::class)
+    ->middleware('auth')
+    ->group(function () {
+
+        Route::get('order/c/{orderID}', 'showCompleted')
+            ->name('order.completed');
+
+        Route::get('orders', 'index')
+            ->name('order.index');
+
+
+    });
 
 Route::middleware('auth')->group(function () {
     Route::get('/carts', [CartController::class, 'index'])

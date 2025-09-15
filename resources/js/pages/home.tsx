@@ -1,10 +1,12 @@
 import { HomeCarousel } from '@/components/home/HomeCarousel';
 import { ProductCard } from '@/components/products/ProductCard';
+import { CartContext } from '@/context/cartsContext';
 import { HomePage } from '@/lib/lang';
-import { Product } from '@/types';
-import { Head, Link } from '@inertiajs/react';
+import { fetchWithHeaders } from '@/lib/utils';
+import { Product, SharedData } from '@/types';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { ArrowRight, Lock, LucidePhoneCall, TruckIcon, Wallet2Icon } from 'lucide-react';
-import { ComponentProps } from 'react';
+import { ComponentProps, useContext, useEffect, useState } from 'react';
 
 type HomeProps = {
     categories: {
@@ -20,8 +22,31 @@ type HomeProps = {
 } & ComponentProps<'div'>
 
 export default function Home({ categories, products }: HomeProps) {
+    const { auth } = usePage<SharedData>().props;
     const titlePart = HomePage.Hero.title.split('/');
     const subtitlePart = HomePage.Hero.subtitle.split('Loremipsum ');
+    const [carts, setCarts] = useState<null | Product[]>(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const response = await fetchWithHeaders(route("carts.json"));
+            if (!response.ok) {
+                // HANDLE ERRORS
+                console.log(response);
+            }
+            const json = await response.json();
+
+            setCarts(json);
+            console.log(json);
+        }
+
+
+        if (!auth.user || !auth.carts?.length) {
+            setCarts([]);
+        } else {
+            fetchData();
+        }
+    }, [])
     return (
         <>
             <Head title="Home" />
@@ -125,6 +150,7 @@ export default function Home({ categories, products }: HomeProps) {
                 </section>
 
             </div>
+
         </>
     );
 }

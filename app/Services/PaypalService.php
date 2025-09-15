@@ -30,13 +30,16 @@ class PaypalService {
 
 
 
-    protected function createOrder (User $user, Array $ids): mixed {
+    protected function createOrder (User $user, Array $data): mixed {
         $productService = new ProductService();
-        $products = $productService->getAllProducts($ids);
+        $products = $productService->getAllProducts($data['items']);
         $cartItems = $user->cart()->first()->cartItem()->get();
+        $shipping = $user->shippings()->where('id', $data['shipping_id'])->first();
+        $contact = $user->contacts()->where('id', $data['contact_id'])->first();
+
         $total = 0;
 
-        $products = collect($products)->map(function (array $item, $key) use ($cartItems, $total) {
+        $products = collect($products)->map(function (array $item, $key) use ($cartItems, $total, $shipping, $contact) {
             $cartItem = $cartItems->where('product_id', $key)->first();
 
             return [
@@ -64,13 +67,14 @@ class PaypalService {
                     'paypal' => [
                         'experience_context' => [
                             "user_action" => "PAY_NOW",
-                            'return_url' => route('paypal.return', 'paypal'),
+                            'return_url' => route('paypal.return', ['provider' => 'paypal', 'contact' => $contact->id, 'shpping' => $shipping->id]),
                             'cancel_url' => route('carts.index')
                         ]
                     ]
                 ],
                 'purchase_units' => [
                     [
+                        'custom_id' => "{$shipping->id}:{$contact->id}",
                         'amount' => [
                             'currency_code' => 'PHP',
                             'value' => number_format((float) $total, 2, '.', ''),
@@ -83,12 +87,11 @@ class PaypalService {
                         ],
                         "shipping"=> [
                             "address"=> [
-                                "address_line_1"=> "2211 N First Street",
-                                "address_line_2"=> "Building 17",
-                                "admin_area_2"=> "San Jose",
-                                "admin_area_1"=> "CA",
-                                "postal_code"=> "95131",
-                                "country_code"=> "US"
+                                "address_line_1"=> $shipping->street,
+                                "admin_area_1"=> $shipping->city,
+                                "admin_area_2"=> $shipping->state,
+                                "postal_code"=> $shipping->zip,
+                                "country_code"=> "PH"
                             ]
                         ],
                         "items" => $products
@@ -132,9 +135,9 @@ class PaypalService {
             true);
     }
 
-    public function makePayment (User $user, Array $productIds): Response
+    public function makePayment (User $user, Array $data): Response
     {
-        $order = $this->createOrder($user, $productIds);
+        $order = $this->createOrder($user, $data);
 
         foreach($order['links'] as $link) {
             if($link['rel'] == 'payer-action') {

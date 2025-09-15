@@ -74,4 +74,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Shipping::class);
     }
+    /**
+     * Points to the orders of the current user
+     *
+     * @return HasMany<Order,User>
+     */
+    public function orders(): HasMany{
+        return $this->hasMany(Order::class);
+    }
 }

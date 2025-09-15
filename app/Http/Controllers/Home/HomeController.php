@@ -16,15 +16,18 @@ class HomeController extends Controller
 
     if($products->successful() && $categories->successful()) {
         $categories = $categories->json();
+
         $products = $products->json()['products'];
 
-        return Inertia::render('home', [
-            'categories' => array_map(function ($el) {
+        $categories = array_map(function ($el) {
                 return [
                     'category' => $el,
                     'thumbnail' => Http::get($el['url'])->json()['products'][0]['thumbnail']
                 ];
-            },array_splice($categories, 0 , 3)),
+            },array_splice($categories, 0 , 3));
+
+        return Inertia::render('home', [
+            'categories' => $categories,
             'products' => $products
         ]);
     };
