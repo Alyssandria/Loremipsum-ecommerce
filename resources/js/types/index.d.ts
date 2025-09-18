@@ -7,6 +7,11 @@ export interface Carts {
     quantity: number
 }
 
+export interface CartItemType {
+    product: Product,
+    quantity: int
+}
+
 export interface Auth {
     user: User;
     carts: Carts[] | null;

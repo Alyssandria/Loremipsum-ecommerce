@@ -3,11 +3,9 @@
 namespace App\Http\Controllers\Products;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\JsonResponse;
+use App\Services\CartService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Http\Client\Pool;
 use Inertia\Inertia;
 
 class CartController extends Controller
@@ -15,9 +13,11 @@ class CartController extends Controller
     /**
      *
      */
-    public function index(Request $request)
+    public function index(Request $request, CartService $cart)
     {
-        return Inertia::render('carts/Carts');
+        return Inertia::render('carts/Carts', [
+            'items' => [...$cart->getItems($request->user())]
+        ]);
     }
     /**
      * @return RedirectResponse
@@ -37,5 +37,33 @@ class CartController extends Controller
         }
 
         return redirect()->back();
+    }
+
+    public function update(Request $request, CartService $cartService, int $productID)
+    {
+        $cart = $request->user()->cart()->firstOrCreate([]);
+        $quantity = $request->query('q');
+
+        $cartItem = $cart->cartItem()->where('product_id', $productID)->first();
+
+        if (!$cartItem){
+            // RETURN SOME JSON RESPONS
+            // HANDLE ERROR
+            return response()->json([
+                'message' => "Item not found",
+                'id' => $productID
+            ], 404);
+        }
+
+        if (!$quantity) {
+            $cartItem->increment('quantity');
+        } else {
+            $cartItem->update(['quantity' => $quantity]);
+        }
+
+        return response()->json([
+            'message' => "Quantity updated succesfully",
+            'id' => $productID
+        ]);
     }
 }

@@ -18,19 +18,20 @@ Route::controller(ShopController::class)->group(function () {
 Route::controller(OrderController::class)
     ->middleware('auth')
     ->group(function () {
-
         Route::get('order/c/{orderID}', 'showCompleted')
             ->name('order.completed');
 
         Route::get('orders', 'index')
             ->name('order.index');
-
-
     });
 
-Route::middleware('auth')->group(function () {
-    Route::get('/carts', [CartController::class, 'index'])
-        ->name('carts.index');
-    Route::post('/cart/{productID}', [CartController::class, 'store'])
-        ->name('cart.add');
-});
+Route::controller(CartController::class)
+    ->middleware('auth')
+    ->group(function () {
+        Route::get('/carts', 'index')
+            ->name('carts.index');
+        Route::post('/cart/{productID}', 'store')
+            ->name('cart.add');
+        Route::post('/cart/update/{productID}', 'update')
+            ->name('cart.update');
+    });

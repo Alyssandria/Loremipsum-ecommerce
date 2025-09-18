@@ -20,6 +20,7 @@ type CheckoutProps = {
 export default function({ items, shipping, contacts, }: CheckoutProps) {
     const { auth } = usePage<SharedData>().props;
     const [ids, setIds] = useState<number[]>([...items.map((el) => el.id)]);
+    console.log(items);
 
     const { data, setData, post, errors, processing } = useForm({
         contact_id: contacts.length ? contacts[0].id : null,

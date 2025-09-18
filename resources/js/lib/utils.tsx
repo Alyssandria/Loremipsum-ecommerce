@@ -14,9 +14,10 @@ export function formatCategory(category: string) {
         : `${category[0].toUpperCase()}${category.slice(1)}`
 }
 
-export function fetchWithHeaders(route: string) {
+export function fetchWithHeaders(route: string, method = "GET") {
     return fetch(route, {
         credentials: 'include',
+        method: method,
         headers: {
             'Accept': 'application/json',
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')!.getAttribute('content')!,

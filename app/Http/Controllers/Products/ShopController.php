@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Products;
 
 use App\Http\Controllers\Controller;
+use App\Services\CartService;
 use App\Services\PaypalService;
 use App\Services\ProductService;
 use Illuminate\Http\Request;
@@ -16,8 +17,10 @@ class ShopController extends Controller
      * @return Response
      */
 
-    public function checkout(Request $request, ProductService $product) {
+    public function checkout(Request $request, ProductService $product, CartService $cartService) {
         $query = $request->query('ids');
+        $cart = $cartService->getItems($request->user());
+
 
         if(!$query){
             return redirect()->route('carts.index');
@@ -26,10 +29,17 @@ class ShopController extends Controller
         $contacts = $request->user()->contacts()->get()->all();
         $shipping = $request->user()->shippings()->get()->all();
 
+
+        $itemData = collect($query)->map(function (int $value) use ($cart){
+            return [
+                ...$cart[$value],
+            ];
+        })->toArray();
+
         return Inertia::render("carts/Checkout", [
             'contacts' => $contacts,
             'shipping' => $shipping,
-            'items' => [...$product->getAllProducts($query)]
+            'items' => $itemData
         ]);
     }
 
