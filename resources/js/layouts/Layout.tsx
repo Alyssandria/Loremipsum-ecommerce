@@ -33,56 +33,58 @@ export const NavLink = ({ routeName, className, children, onClick }: { onClick?:
 export default function Layout({ children }: ComponentProps<"div">) {
     const { auth } = usePage<SharedData>().props;
     return (
-        <div className="w-full bg-white text-primary-foreground overflow-x-clip">
-            <div className="w-full bg-[#F3F5F7] p-2 items-center justify-center gap-2 flex">
-                <BannerIcon />
-                <p className="max-sm:text-xs text-[#343839] font-bold">{HomePage.Banner.content}</p>
-                <Link href={route('product.index')} className="max-md:hidden flex items-center gap-2 font-bold underline text-[#377DFF]">
-                    {HomePage.Banner.cta.content}
-                    <ArrowRightIcon className="w-4 stroke-[#377DFF]" />
-                </Link>
-            </div>
-            <header className="w-full p-6 md:px-12">
-                <nav className="flex items-center justify-between gap-4">
-                    <div className="flex gap-2 items-center">
-                        <MobileNav />
-                        <Link
-                            href={route('home')}
-                            className="font-bold text-lg"
-                        >
-                            {HomePage.Navigation.logo}
-                        </Link>
-                    </div>
-                    <div className="hidden  gap-8 md:flex">
-                        <NavLink
-                            routeName="home"
-                        >
-                            {HomePage.Navigation.home}
-                        </NavLink>
-                        <NavLink
-                            routeName="product.index"
-                        >
-                            {HomePage.Navigation.shop}
-                        </NavLink>
-                        <NavLink
-                            routeName="contact"
-                        >
-                            {HomePage.Navigation.contact}
-                        </NavLink>
-                    </div>
-                    {auth.user ? (
-                        <Carts />
-                    ) : (
-                        <>
+        <div className="w-full bg-white text-primary-foreground overflow-x-clip  min-h-screen flex flex-col justify-between">
+            <div>
+                <div className="w-full bg-[#F3F5F7] p-2 items-center justify-center gap-2 flex">
+                    <BannerIcon />
+                    <p className="max-sm:text-xs text-[#343839] font-bold">{HomePage.Banner.content}</p>
+                    <Link href={route('product.index')} className="max-md:hidden flex items-center gap-2 font-bold underline text-[#377DFF]">
+                        {HomePage.Banner.cta.content}
+                        <ArrowRightIcon className="w-4 stroke-[#377DFF]" />
+                    </Link>
+                </div>
+                <header className="w-full p-6 md:px-12">
+                    <nav className="flex items-center justify-between gap-4">
+                        <div className="flex gap-2 items-center">
+                            <MobileNav />
                             <Link
-                                href={route('login')}
+                                href={route('home')}
+                                className="font-bold text-lg"
                             >
-                                Log in
+                                {HomePage.Navigation.logo}
                             </Link>
-                        </>
-                    )}
-                </nav>
-            </header>
+                        </div>
+                        <div className="hidden  gap-8 md:flex">
+                            <NavLink
+                                routeName="home"
+                            >
+                                {HomePage.Navigation.home}
+                            </NavLink>
+                            <NavLink
+                                routeName="product.index"
+                            >
+                                {HomePage.Navigation.shop}
+                            </NavLink>
+                            <NavLink
+                                routeName="contact"
+                            >
+                                {HomePage.Navigation.contact}
+                            </NavLink>
+                        </div>
+                        {auth.user ? (
+                            <Carts />
+                        ) : (
+                            <>
+                                <Link
+                                    href={route('login')}
+                                >
+                                    Log in
+                                </Link>
+                            </>
+                        )}
+                    </nav>
+                </header>
+            </div>
             <main className="w-full bg-white px-6 md:px-12">
                 {children}
             </main>
@@ -104,7 +106,7 @@ export default function Layout({ children }: ComponentProps<"div">) {
                     </div>
                 </section>
             }
-            <footer className="bg-[#232627] text-white gap-6 p-6 grid place-items-center md:place-items-start md:grid-cols-8 md:p-12 my-20">
+            <footer className="bg-[#232627] text-white gap-6 p-6 grid place-items-center md:place-items-start md:grid-cols-8 md:p-12 h-full">
                 <Link href={route('home')} className="text-xl font-bold md:text-sm">{HomePage.Navigation.logo}</Link>
                 <div className="flex flex-col items-center justify-center gap-4 md:col-start-6 w-full md:col-span-full md:flex-row md:justify-end md:items-start">
                     <Link href={route('home')} className="">{HomePage.Navigation.home}</Link>

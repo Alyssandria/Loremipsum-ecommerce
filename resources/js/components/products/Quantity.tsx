@@ -4,7 +4,7 @@ import { ComponentProps } from "react"
 
 export const QuantityButton = ({ children, className, ...props }: ComponentProps<"button">) => {
     return (
-        <Button className={cn("p-2 font-bold", className)} {...props}>{children}</Button>
+        <Button className={cn("p-2 font-bold md:text-lg", className)} {...props}>{children}</Button>
     )
 }
 

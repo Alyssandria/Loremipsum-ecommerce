@@ -15,8 +15,12 @@ class CartController extends Controller
      */
     public function index(Request $request, CartService $cart)
     {
+        $itemData = collect($cart->getItems($request->user()))->sortBy([
+            fn (array $a, array $b) => $a['product']['title'] <=> $b['product']['title']
+        ])->toArray();
+
         return Inertia::render('carts/Carts', [
-            'items' => [...$cart->getItems($request->user())]
+            'items' => [...$itemData]
         ]);
     }
     /**
