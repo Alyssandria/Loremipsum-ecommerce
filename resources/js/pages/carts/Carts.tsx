@@ -1,13 +1,12 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn, formatPrice } from "@/lib/utils";
-import { type CartItemType, Product, SharedData } from "@/types";
+import { type CartItemType, SharedData } from "@/types";
 import { ComponentProps, useEffect, useState } from "react"
 import { CartItem } from "@/components/cartItem";
 import { Separator } from "@/components/ui/separator";
 import { Link, usePage } from "@inertiajs/react";
 import { ArrowRight } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { CartItemCompound } from "@/components/ui/cartItemC";
 
 type CartsProps = {
     items: CartItemType[]
@@ -33,7 +32,6 @@ export default function Carts({ items }: CartsProps) {
 
     useEffect(() => {
         setCarts(items);
-        setisLoading(false);
     }, [items]);
 
     useEffect(() => {
@@ -80,10 +78,14 @@ export default function Carts({ items }: CartsProps) {
                                         }>
                                             <CartItem.Content>
                                                 <CartItem.Title />
-                                                <div>
+                                                <CartItem.Category />
+                                                <CartItem.Price />
+                                                <CartItem.RemoveButton />
+                                                <CartItem.Checkout>Checkout</CartItem.Checkout>
+                                                <CartItem.Image src={el.product.thumbnail} />
+                                                <div className="col-start-2 row-start-3 flex items-center justify-between px-2 py-1 border border-[#6C7275] rounded-lg">
                                                     <CartItem.QuantityHandler handleQuantityClick={(ctx) => {
                                                         ctx.setQuantity(prev => Math.max(1, prev - 1))
-
                                                     }}
                                                     >
                                                         -
@@ -111,7 +113,7 @@ export default function Carts({ items }: CartsProps) {
                         <span className="block text-secondary/60 font-medium">Subtotal</span>
                         <span className="block font-bold">
                             {isLoading ?
-                                <Skeleton className="h-10 w-8" />
+                                <Skeleton className="h-5 w-20" />
                                 :
                                 formatPrice(subTotal)
                             }
@@ -121,7 +123,7 @@ export default function Carts({ items }: CartsProps) {
                 </div>
                 <div className="flex justify-between">
                     <span className="block text-lg">Total</span>
-                    <span className="block font-bold">{formatPrice(subTotal)}</span>
+                    <span className="block font-bold">{isLoading ? <Skeleton className="h-5 w-20" /> : formatPrice(subTotal)}</span>
                 </div>
 
                 {
