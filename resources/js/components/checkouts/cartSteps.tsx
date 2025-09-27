@@ -22,7 +22,7 @@ type cartStepProps = {
 export const CartSteps = ({ current = 1, className, ...props }: cartStepProps) => {
     return (
         <div className="flex w-full md:justify-center">
-            <div className="w-full md:w-1/2 flex md:gap-12 max-md:justify-between">
+            <div className="w-full lg:w-3/5 flex md:gap-12 max-md:justify-between">
                 {
                     STEPS.map((el) => {
                         const isCurrent = current === el.step;
