@@ -7,6 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { Link, usePage } from "@inertiajs/react";
 import { ArrowRight } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
+import { CartSteps } from "@/components/checkouts/cartSteps";
 
 type CartsProps = {
     items: CartItemType[]
@@ -23,7 +24,6 @@ export default function Carts({ items }: CartsProps) {
         if (!auth.carts) {
             return;
         }
-
         setSelected(prev => {
             return prev.some(el => el.product.id === item.product.id) ? prev.filter(el => el.product.id !== item.product.id) : [...prev, item]
         });
@@ -52,10 +52,14 @@ export default function Carts({ items }: CartsProps) {
     }, [selected, items]);
 
     return (
-        <div className="flex flex-col gap-8 lg:flex-row">
-            {
-                <div className={cn("flex flex-col gap-8 w-full", !carts || !carts.length ? "items-center" : "")}>
-                    {!carts.length ?
+        <div className="flex flex-col gap-8">
+            <div className="">
+                <h1 className="text-center text-3xl font-bold">Cart</h1>
+                <CartSteps />
+            </div>
+            <div className={cn("flex flex-col gap-8 w-full", !carts || !carts.length ? "items-center" : "")}>
+                {
+                    !carts.length ?
                         <span>
                             Your cart is empty
                         </span>
@@ -102,10 +106,9 @@ export default function Carts({ items }: CartsProps) {
                                 </div>
                             )
                         })
-                    }
-                </div>
-            }
+                }
 
+            </div>
             <div className="border p-4 rounded-2xl flex flex-col gap-6 lg:w-1/2 h-fit">
                 <span className="block font-bold text-xl">Cart Summary</span>
                 <div className="space-y-2">
