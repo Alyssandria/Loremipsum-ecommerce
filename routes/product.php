@@ -34,4 +34,6 @@ Route::controller(CartController::class)
             ->name('cart.add');
         Route::post('/cart/update/{productID}', 'update')
             ->name('cart.update');
+        Route::delete('/cart/delete/{productID}','delete')
+            ->name('cart.delete');
     });

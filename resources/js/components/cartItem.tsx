@@ -3,7 +3,7 @@ import { CartItemType } from "@/types"
 import { ComponentProps, createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from "react"
 import { Button } from "./ui/button";
 import { router } from "@inertiajs/react";
-import { XIcon } from "lucide-react";
+import { Loader2Icon, XIcon } from "lucide-react";
 
 
 const CartItemContext = createContext<null | {
@@ -76,13 +76,29 @@ const QuantityText = ({ className }: ComponentProps<"span">) => {
     )
 }
 
-const RemoveButton = ({ className, ...props }: ComponentProps<"button">) => {
+type RemoveButtonProps = {
+    handleRemove?: (opts: {
+        isLoading: boolean,
+        setIsLoading: Dispatch<SetStateAction<boolean>>
+    }) => void
+} & ComponentProps<"button">
+const RemoveButton = ({ handleRemove, className, ...props }: RemoveButtonProps) => {
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+
     return (
         <Button
             className={cn("w-fit place-self-end bg-transparent text-black shadow-none", className)}
+            onClick={() => {
+                handleRemove?.({ isLoading, setIsLoading })
+            }}
             {...props}
         >
-            <XIcon />
+            {
+                isLoading ?
+                    <Loader2Icon className="transition-all animate-spin" /> :
+                    <XIcon />
+            }
+
         </Button>
     )
 }

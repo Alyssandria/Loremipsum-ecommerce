@@ -11,6 +11,19 @@ class CartService {
     public function get(User $user) : Cart | null {
         return $user->cart()->first();
     }
+
+    public function deleteItem(User $user, int $productID) {
+        $item = $this->get($user)->cartItem()->where('product_id', $productID)->first();
+
+        if (!$item) {
+            // HANDLE ERROR
+            dd($item);
+        }
+
+        $item->delete();
+
+        return $this->getItems($user);
+    }
     /**
      * Get all cart items including product data
      * @return array

@@ -1,10 +1,10 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import { cn, formatPrice } from "@/lib/utils";
+import { cn, fetchWithHeaders, formatPrice } from "@/lib/utils";
 import { type CartItemType, SharedData } from "@/types";
 import { ComponentProps, useEffect, useState } from "react"
 import { CartItem } from "@/components/cartItem";
 import { Separator } from "@/components/ui/separator";
-import { Link, usePage } from "@inertiajs/react";
+import { Link, router, usePage } from "@inertiajs/react";
 import { ArrowRight } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { CartSteps } from "@/components/checkouts/cartSteps";
@@ -63,6 +63,7 @@ export default function Carts({ items }: CartsProps) {
 
     }, [selected, items]);
 
+
     return (
         <div className="flex flex-col gap-8">
             <div className="">
@@ -71,113 +72,131 @@ export default function Carts({ items }: CartsProps) {
             </div>
 
             <div className="flex flex-col xl:flex-row justify-center md:p-12 gap-8">
-                <Table className="w-full">
-                    <TableCaption className="sr-only">Your cart items</TableCaption>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead className="w-fit">
-                                <Checkbox
-                                    checked={carts.length === selected.length}
-                                    onClick={() => selected.length !== carts.length ? setSelected([...carts]) : setSelected([])}
-                                />
-                            </TableHead>
-                            <TableHead>Product</TableHead>
-                            <TableHead className="max-md:hidden">Quantity</TableHead>
-                            <TableHead className="max-md:hidden">Price</TableHead>
-                            <TableHead className="text-right max-md:hidden">Subtotal</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {
+                {
 
-                            !carts.length ?
-                                <span>
-                                    Your cart is empty
-                                </span>
-                                :
-                                carts.map(el => {
-                                    return (
-                                        <TableRow>
-                                            <TableCell>
-                                                <Checkbox
-                                                    checked={selected.some(x => el.product.id === x.product.id)}
-                                                    onClick={() => toggleSelect(el)}
-                                                />
-                                            </TableCell>
+                    !carts.length ?
+                        <span className="block text-center text-2xl font-bold">
+                            Your cart is empty.
+                            {" "}
+                            <Link className="underline" href={route('product.index')}>Shop Now</Link>
+                        </span>
+                        :
+                        <Table className="w-full">
+                            <TableCaption className="sr-only">Your cart items</TableCaption>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead className="w-fit">
+                                        <Checkbox
+                                            checked={carts.length === selected.length}
+                                            onClick={() => selected.length !== carts.length ? setSelected([...carts]) : setSelected([])}
+                                        />
+                                    </TableHead>
+                                    <TableHead>Product</TableHead>
+                                    <TableHead className="max-md:hidden">Quantity</TableHead>
+                                    <TableHead className="max-md:hidden">Price</TableHead>
+                                    <TableHead className="text-right max-md:hidden">Subtotal</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {
 
-                                            <TableCell>
-                                                <CartItem item={el} onQuantityChange={
-                                                    () => {
-                                                        if (selected.some((x) => x.product.id === el.product.id)) {
-                                                            console.log("qweqwe");
-                                                            setisLoading(true);
+                                    carts.map(el => {
+                                        return (
+                                            <TableRow>
+                                                <TableCell>
+                                                    <Checkbox
+                                                        checked={selected.some(x => el.product.id === x.product.id)}
+                                                        onClick={() => toggleSelect(el)}
+                                                    />
+                                                </TableCell>
+
+                                                <TableCell>
+                                                    <CartItem item={el} onQuantityChange={
+                                                        () => {
+                                                            if (selected.some((x) => x.product.id === el.product.id)) {
+                                                                console.log("qweqwe");
+                                                                setisLoading(true);
+                                                            }
                                                         }
-                                                    }
-                                                }>
-                                                    <CartItem.Content>
-                                                        <CartItem.Title />
-                                                        <CartItem.Category />
-                                                        <CartItem.Price className="md:hidden" />
-                                                        <CartItem.RemoveButton
-                                                            className={
-                                                                cn(
-                                                                    "md:row-start-3 md:place-self-start",
-                                                                    selected.length ? "hidden" : ""
-                                                                )}
-                                                        />
-                                                        <CartItem.Checkout
-                                                            className={
-                                                                cn(
-                                                                    "max-sm:text-xs md:row-start-3 md:col-start-2 md:w-fit md:place-self-start",
-                                                                    selected.length ? "hidden" : ""
-                                                                )}
-                                                        >
-                                                            Checkout
-                                                        </CartItem.Checkout>
-                                                        <CartItem.Image src={el.product.thumbnail} />
+                                                    }>
+                                                        <CartItem.Content>
+                                                            <CartItem.Title />
+                                                            <CartItem.Category />
+                                                            <CartItem.Price className="md:hidden" />
+                                                            <CartItem.RemoveButton
+                                                                handleRemove={async (opts) => {
+                                                                    opts.setIsLoading(true);
+                                                                    const response = await fetchWithHeaders(route("cart.delete", { productID: el.product.id }), "DELETE");
 
-                                                        <QuantityHandler
-                                                            className="md:hidden col-start-2 row-start-3 flex items-center justify-between px-2 py-1 border border-[#6C7275] rounded-lg"
-                                                            quantity={el.quantity}
-                                                            productID={el.product.id}
-                                                            onQuantityChange={() => {
-                                                                setLoadingProduct(el.product.id);
-                                                                setisLoading(true)
-                                                            }}
-                                                        />
-                                                    </CartItem.Content>
-                                                </CartItem>
-                                            </TableCell>
-                                            <TableCell className="max-md:hidden text-center">
-                                                <QuantityHandler
-                                                    quantity={el.quantity}
-                                                    productID={el.product.id}
-                                                    onQuantityChange={() => {
-                                                        setLoadingProduct(el.product.id);
-                                                        setisLoading(true)
-                                                    }}
-                                                />
-                                            </TableCell>
-                                            <TableCell className="max-md:hidden text-right">
-                                                <span className="font-bold">
+                                                                    if (!response.ok) {
+                                                                        // HANDLE ERRORS
+                                                                        console.log(response);
+                                                                    }
+                                                                    const json = await response.json();
+                                                                    setCarts(json['items']);
+                                                                    router.reload({ only: ["items", "auth"] })
+                                                                    opts.setIsLoading(false);
+                                                                }}
+                                                                className={
+                                                                    cn(
+                                                                        "md:row-start-3 md:place-self-start",
+                                                                        selected.length ? "hidden" : ""
+                                                                    )}
+                                                            />
+                                                            <CartItem.Checkout
+                                                                className={
+                                                                    cn(
+                                                                        "max-sm:text-xs md:row-start-3 md:col-start-2 md:w-fit md:place-self-start",
+                                                                        selected.length ? "hidden" : ""
+                                                                    )}
+                                                            >
+                                                                Checkout
+                                                            </CartItem.Checkout>
+                                                            <CartItem.Image src={el.product.thumbnail} />
 
-                                                    {formatPrice(el.product.price)}
-                                                </span>
-                                            </TableCell>
-                                            <TableCell className="max-md:hidden text-right">
-                                                <span className="font-bold">
-                                                    {loadingProduct === el.product.id ?
-                                                        <Skeleton className="h-5 w-20" />
-                                                        :
-                                                        formatPrice(el.product.price * el.quantity)}
-                                                </span>
-                                            </TableCell>
-                                        </TableRow>
-                                    )
-                                })
-                        }
-                    </TableBody>
-                </Table>
+                                                            <QuantityHandler
+                                                                className="md:hidden col-start-2 row-start-3 flex items-center justify-between px-2 py-1 border border-[#6C7275] rounded-lg"
+                                                                quantity={el.quantity}
+                                                                productID={el.product.id}
+                                                                onQuantityChange={() => {
+                                                                    setLoadingProduct(el.product.id);
+                                                                    setisLoading(true)
+                                                                }}
+                                                            />
+                                                        </CartItem.Content>
+                                                    </CartItem>
+                                                </TableCell>
+                                                <TableCell className="max-md:hidden text-center">
+                                                    <QuantityHandler
+                                                        quantity={el.quantity}
+                                                        productID={el.product.id}
+                                                        onQuantityChange={() => {
+                                                            setLoadingProduct(el.product.id);
+                                                            setisLoading(true)
+                                                        }}
+                                                    />
+                                                </TableCell>
+                                                <TableCell className="max-md:hidden text-right">
+                                                    <span className="font-bold">
+
+                                                        {formatPrice(el.product.price)}
+                                                    </span>
+                                                </TableCell>
+                                                <TableCell className="max-md:hidden text-right">
+                                                    <span className="font-bold">
+                                                        {loadingProduct === el.product.id ?
+                                                            <Skeleton className="h-5 w-20" />
+                                                            :
+                                                            formatPrice(el.product.price * el.quantity)}
+                                                    </span>
+                                                </TableCell>
+                                            </TableRow>
+                                        )
+                                    })
+                                }
+                            </TableBody>
+                        </Table>
+                }
                 <div className="border p-4 rounded-2xl flex flex-col gap-6 xl:w-1/2 h-fit">
                     <span className="block font-bold text-xl">Cart Summary</span>
                     <div className="space-y-2">

@@ -23,6 +23,18 @@ class CartController extends Controller
             'items' => [...$itemData]
         ]);
     }
+
+    public function delete(Request $request, CartService $cart, int $productID) {
+        $items = collect($cart->deleteItem($request->user(), $productID))->sortBy([
+            fn (array $a, array $b) => $a['product']['title'] <=> $b['product']['title']
+        ])->toArray();
+
+        return response()->json([
+            'successfull' => true,
+            'items' => [...$items]
+        ]
+        );
+    }
     /**
      * @return RedirectResponse
      */
