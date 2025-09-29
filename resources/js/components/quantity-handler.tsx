@@ -1,7 +1,6 @@
-import { ComponentProps, useEffect, useState } from "react"
+import { ComponentProps } from "react"
 import { Button } from "./ui/button"
-import { cn, fetchWithHeaders } from "@/lib/utils"
-import { router } from "@inertiajs/react"
+import { cn, } from "@/lib/utils"
 import { useUpdateQuantity } from "@/hooks/use-update-quantity"
 
 type QuantityHandlerProps = {

@@ -18,7 +18,6 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { Button } from "@headlessui/react";
 import { QuantityHandler } from "@/components/quantity-handler";
 
 type CartsProps = {
@@ -77,7 +76,10 @@ export default function Carts({ items }: CartsProps) {
                     <TableHeader>
                         <TableRow>
                             <TableHead className="w-fit">
-                                <Checkbox />
+                                <Checkbox
+                                    checked={carts.length === selected.length}
+                                    onClick={() => selected.length !== carts.length ? setSelected([...carts]) : setSelected([])}
+                                />
                             </TableHead>
                             <TableHead>Product</TableHead>
                             <TableHead className="max-md:hidden">Quantity</TableHead>
@@ -97,7 +99,10 @@ export default function Carts({ items }: CartsProps) {
                                     return (
                                         <TableRow>
                                             <TableCell>
-                                                <Checkbox />
+                                                <Checkbox
+                                                    checked={selected.some(x => el.product.id === x.product.id)}
+                                                    onClick={() => toggleSelect(el)}
+                                                />
                                             </TableCell>
 
                                             <TableCell>
@@ -113,8 +118,22 @@ export default function Carts({ items }: CartsProps) {
                                                         <CartItem.Title />
                                                         <CartItem.Category />
                                                         <CartItem.Price className="md:hidden" />
-                                                        <CartItem.RemoveButton className="md:row-start-3 md:place-self-start" />
-                                                        <CartItem.Checkout className="max-sm:text-xs md:row-start-3 md:col-start-2 md:w-fit md:place-self-start">Checkout</CartItem.Checkout>
+                                                        <CartItem.RemoveButton
+                                                            className={
+                                                                cn(
+                                                                    "md:row-start-3 md:place-self-start",
+                                                                    selected.length ? "hidden" : ""
+                                                                )}
+                                                        />
+                                                        <CartItem.Checkout
+                                                            className={
+                                                                cn(
+                                                                    "max-sm:text-xs md:row-start-3 md:col-start-2 md:w-fit md:place-self-start",
+                                                                    selected.length ? "hidden" : ""
+                                                                )}
+                                                        >
+                                                            Checkout
+                                                        </CartItem.Checkout>
                                                         <CartItem.Image src={el.product.thumbnail} />
 
                                                         <QuantityHandler
