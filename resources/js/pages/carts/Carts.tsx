@@ -19,6 +19,7 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { Button } from "@headlessui/react";
+import { QuantityHandler } from "@/components/quantity-handler";
 
 type CartsProps = {
     items: CartItemType[]
@@ -29,6 +30,7 @@ export default function Carts({ items }: CartsProps) {
     const [subTotal, setSubTotal] = useState<number>(0);
     const [selected, setSelected] = useState<CartItemType[]>([]);
     const [isLoading, setisLoading] = useState<boolean>(false);
+    const [loadingProduct, setLoadingProduct] = useState<number | null>(null);
     const { auth } = usePage<SharedData>().props;
 
     const toggleSelect = (item: CartItemType) => {
@@ -38,11 +40,11 @@ export default function Carts({ items }: CartsProps) {
         setSelected(prev => {
             return prev.some(el => el.product.id === item.product.id) ? prev.filter(el => el.product.id !== item.product.id) : [...prev, item]
         });
-
     }
 
     useEffect(() => {
         setCarts(items);
+        setLoadingProduct(null);
     }, [items]);
 
     useEffect(() => {
@@ -69,9 +71,9 @@ export default function Carts({ items }: CartsProps) {
                 <CartSteps />
             </div>
 
-            <div className="flex flex-col lg:flex-row justify-center p-12 gap-8">
+            <div className="flex flex-col xl:flex-row justify-center md:p-12 gap-8">
                 <Table className="w-full">
-                    <TableCaption>A list of your recent invoices.</TableCaption>
+                    <TableCaption className="sr-only">Your cart items</TableCaption>
                     <TableHeader>
                         <TableRow>
                             <TableHead className="w-fit">
@@ -111,45 +113,44 @@ export default function Carts({ items }: CartsProps) {
                                                         <CartItem.Title />
                                                         <CartItem.Category />
                                                         <CartItem.Price className="md:hidden" />
-                                                        <CartItem.RemoveButton className="md:row-start-3 place-self-start" />
+                                                        <CartItem.RemoveButton className="md:row-start-3 md:place-self-start" />
                                                         <CartItem.Checkout className="max-sm:text-xs md:row-start-3 md:col-start-2 md:w-fit md:place-self-start">Checkout</CartItem.Checkout>
                                                         <CartItem.Image src={el.product.thumbnail} />
-                                                        <div className="md:hidden col-start-2 row-start-3 flex items-center justify-between px-2 py-1 border border-[#6C7275] rounded-lg">
-                                                            <CartItem.QuantityHandler handleQuantityClick={(ctx) => {
-                                                                ctx.setQuantity(prev => Math.max(1, prev - 1))
+
+                                                        <QuantityHandler
+                                                            className="md:hidden col-start-2 row-start-3 flex items-center justify-between px-2 py-1 border border-[#6C7275] rounded-lg"
+                                                            quantity={el.quantity}
+                                                            productID={el.product.id}
+                                                            onQuantityChange={() => {
+                                                                setLoadingProduct(el.product.id);
+                                                                setisLoading(true)
                                                             }}
-                                                            >
-                                                                -
-                                                            </CartItem.QuantityHandler>
-                                                            <CartItem.QuantityText />
-                                                            <CartItem.QuantityHandler handleQuantityClick={(ctx) => { ctx.setQuantity(prev => prev + 1) }}>
-                                                                +
-                                                            </CartItem.QuantityHandler>
-                                                        </div>
+                                                        />
                                                     </CartItem.Content>
                                                 </CartItem>
                                             </TableCell>
                                             <TableCell className="max-md:hidden text-center">
-                                                <div className="flex gap-4 w-full justify-center">
-                                                    <Button>
-                                                        -
-                                                    </Button>
-                                                    <span className="font-bold">
-                                                        {el.quantity}
-                                                    </span>
-                                                    <Button>
-                                                        +
-                                                    </Button>
-                                                </div>
+                                                <QuantityHandler
+                                                    quantity={el.quantity}
+                                                    productID={el.product.id}
+                                                    onQuantityChange={() => {
+                                                        setLoadingProduct(el.product.id);
+                                                        setisLoading(true)
+                                                    }}
+                                                />
                                             </TableCell>
                                             <TableCell className="max-md:hidden text-right">
                                                 <span className="font-bold">
+
                                                     {formatPrice(el.product.price)}
                                                 </span>
                                             </TableCell>
                                             <TableCell className="max-md:hidden text-right">
                                                 <span className="font-bold">
-                                                    {formatPrice(el.product.price)}
+                                                    {loadingProduct === el.product.id ?
+                                                        <Skeleton className="h-5 w-20" />
+                                                        :
+                                                        formatPrice(el.product.price * el.quantity)}
                                                 </span>
                                             </TableCell>
                                         </TableRow>
@@ -158,7 +159,7 @@ export default function Carts({ items }: CartsProps) {
                         }
                     </TableBody>
                 </Table>
-                <div className="border p-4 rounded-2xl flex flex-col gap-6 lg:w-1/2 h-fit">
+                <div className="border p-4 rounded-2xl flex flex-col gap-6 xl:w-1/2 h-fit">
                     <span className="block font-bold text-xl">Cart Summary</span>
                     <div className="space-y-2">
                         <div className="flex justify-between items-center">
@@ -177,7 +178,6 @@ export default function Carts({ items }: CartsProps) {
                         <span className="block text-lg">Total</span>
                         <span className="block font-bold">{isLoading ? <Skeleton className="h-5 w-20" /> : formatPrice(subTotal)}</span>
                     </div>
-
                     {
                         selected.length ?
                             <div className="w-full">

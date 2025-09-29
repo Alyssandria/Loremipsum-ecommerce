@@ -14,8 +14,9 @@ export function formatCategory(category: string) {
         : `${category[0].toUpperCase()}${category.slice(1)}`
 }
 
-export function fetchWithHeaders(route: string, method = "GET") {
+export function fetchWithHeaders(route: string, method = "GET", signal?: AbortSignal) {
     return fetch(route, {
+        signal,
         credentials: 'include',
         method: method,
         headers: {
