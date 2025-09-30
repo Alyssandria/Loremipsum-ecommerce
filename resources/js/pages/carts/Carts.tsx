@@ -144,6 +144,7 @@ export default function Carts({ items }: CartsProps) {
                                                                     )}
                                                             />
                                                             <CartItem.Checkout
+                                                                href={route("checkout.show", { ids: [el.product.id] })}
                                                                 className={
                                                                     cn(
                                                                         "max-sm:text-xs md:row-start-3 md:col-start-2 md:w-fit md:place-self-start",

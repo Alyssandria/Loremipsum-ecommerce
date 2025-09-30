@@ -20,7 +20,6 @@ Route::controller(OrderController::class)
     ->group(function () {
         Route::get('order/c/{orderID}', 'showCompleted')
             ->name('order.completed');
-
         Route::get('orders', 'index')
             ->name('order.index');
     });

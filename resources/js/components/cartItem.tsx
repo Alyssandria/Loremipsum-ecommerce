@@ -2,7 +2,7 @@ import { cn, fetchWithHeaders, formatPrice } from "@/lib/utils";
 import { CartItemType } from "@/types"
 import { ComponentProps, createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from "react"
 import { Button } from "./ui/button";
-import { router } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
 import { Loader2Icon, XIcon } from "lucide-react";
 
 
@@ -125,15 +125,15 @@ const QuantityHandler = ({ children, handleQuantityClick, className, ...props }:
     )
 }
 
-const Checkout = ({ children, className, ...props }: ComponentProps<"button">) => {
+const Checkout = ({ children, className, ...props }: ComponentProps<typeof Link>) => {
 
     return (
-        <Button
+        <Link
             {...props}
-            className={cn("p-2 col-start-3 size-full place-self-center", className)}
+            className={cn("p-2 bg-black text-white rounded-lg col-start-3 size-full place-self-center", className)}
         >
             {children}
-        </Button>
+        </Link>
     )
 }
 
