@@ -12,7 +12,7 @@ export const QuantityHandler = ({ children, onQuantityChange, quantity, productI
     const quantityHook = useUpdateQuantity(quantity, productID, { onQuantityChange });
     return (
         <div className={cn("flex items-center gap-2 justify-between", className)} {...props}>
-            <Button
+            <button
                 className={"p-0 md:p-4 bg-transparent text-black text-lg font-bold"}
                 type="button"
                 onClick={() => {
@@ -20,9 +20,9 @@ export const QuantityHandler = ({ children, onQuantityChange, quantity, productI
                 }}
             >
                 -
-            </Button>
+            </button>
             <span className="block max-md:text-xs font-bold">{quantityHook.quantity}</span>
-            <Button
+            <button
                 className={"p-0 md:p-4 bg-transparent text-black text-lg font-bold"}
                 type="button"
                 onClick={() => {
@@ -30,7 +30,7 @@ export const QuantityHandler = ({ children, onQuantityChange, quantity, productI
                 }}
             >
                 +
-            </Button>
+            </button>
         </div>
     )
 }

@@ -86,8 +86,9 @@ const RemoveButton = ({ handleRemove, className, ...props }: RemoveButtonProps) 
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     return (
-        <Button
+        <button
             className={cn("w-fit place-self-end bg-transparent text-black shadow-none", className)}
+            type="button"
             onClick={() => {
                 handleRemove?.({ isLoading, setIsLoading })
             }}
@@ -99,7 +100,7 @@ const RemoveButton = ({ handleRemove, className, ...props }: RemoveButtonProps) 
                     <XIcon />
             }
 
-        </Button>
+        </button>
     )
 }
 

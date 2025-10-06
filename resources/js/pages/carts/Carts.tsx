@@ -99,7 +99,6 @@ export default function Carts({ items }: CartsProps) {
                             </TableHeader>
                             <TableBody>
                                 {
-
                                     carts.map(el => {
                                         return (
                                             <TableRow>

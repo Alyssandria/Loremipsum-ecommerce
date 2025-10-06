@@ -104,6 +104,26 @@ interface Product {
     images: string[];
     thumbnail: string;
 }
+export interface OrderItem {
+    id: number
+    product_id: number
+    order_id: number
+    quantity: number
+    subtotal: number
+    image: string
+}
+
+export interface Order {
+    id: number
+    date: string
+    total: number
+    contact_id: number
+    shipping_id: number
+    user_id: number
+    order_no: string
+    status_id: number
+    payment_id: number
+}
 
 interface Contacts {
     id: number,

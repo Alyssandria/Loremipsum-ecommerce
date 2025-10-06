@@ -6,7 +6,6 @@ use App\Actions\CreateOrderAction;
 use App\Http\Controllers\Controller;
 use App\Services\PaypalService;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 
 class PaypalController extends Controller
 {
@@ -21,12 +20,15 @@ class PaypalController extends Controller
         $user = $request->user();
         $ids = $request->query('ids');
 
+        $contact_id = $request->input('contact_id');
+        $shipping_id = $request->input('shipping_id');
+
         if (!$ids) {
             return redirect()->route('checkout.show');
         }
 
 
-        if(!$request->input('contact_id')){
+        if(!$contact_id){
             $validated = $request->validate([
                 'first_name' => 'required|string|max:255',
                 'last_name' => 'required|string|max:255',
@@ -34,10 +36,10 @@ class PaypalController extends Controller
                 'email' => 'required|email',
             ]);
 
-            $user->contacts()->create($validated);
+            $contact_id = $user->contacts()->create($validated)->id;
         }
 
-        if(!$request->input('shipping_id')){
+        if(!$shipping_id){
             $validated = $request->validate([
                 'street' => 'required|string|max:255',
                 'country' => 'required|string|max:255',
@@ -45,14 +47,13 @@ class PaypalController extends Controller
                 'state' => 'required|string|max:255',
                 'zip' => 'required|numeric|digits:4',
             ]);
-
-            $user->shippings()->create($validated);
+            $shipping_id = $user->shippings()->create($validated)->id;
         }
 
         return $this->paypalClient->makePayment($request->user(), [
             'items' => $ids,
-            'contact_id' => $request->input('contact_id'),
-            'shipping_id' => $request->input('shipping_id'),
+            'contact_id' => $contact_id,
+            'shipping_id' => $shipping_id,
         ]);
     }
 
